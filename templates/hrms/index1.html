@@ -1,0 +1,666 @@
+{% load static %}
+<!doctype html>
+<!doctype html>
+<html lang="en" class="minimal-theme">
+
+
+
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'dashboard/images/favicon-32x32.png' %}" type="image/png" />
+    <!--plugins-->
+    <link href="{% static 'dashboard/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/plugins/vectormap/jquery-jvectormap-2.0.2.css' %}" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/css/bootstrap-extended.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/css/style.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/css/icons.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dashboard/npm/bootstrap-icons%401.5.0/font/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- loader-->l
+    <link href="{% static 'dashboard/css/pace.min.css' %}" rel="stylesheet" />
+
+    <!-- data Table -->
+    <link href="{% static 'dashboard/plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
+    
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Martel:wght@600&family=Mukta:wght@300&family=Roboto+Slab:wght@500&display=swap"
+        rel="stylesheet">
+    <!--Theme Styles-->
+    <link href="{% static 'dashboard/css/dark-theme.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/css/light-theme.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/css/semi-dark.css' %}" rel="stylesheet" />
+    <link href="{% static 'dashboard/css/header-colors.css' %}" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <title>L&K Service | Dashboard</title>
+</head>
+<style>
+    .body,
+    .top-header,
+    .sidebar-wrapper {
+        font-family: 'Martel', serif;
+        font-family: 'Mukta', sans-serif;
+        font-family: 'Roboto Slab', serif;
+        background: linear-gradient(to bottom, #007bff, #0056b3);
+    }
+
+    .page-content {
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+
+<body>
+
+
+    <!--start wrapper-->
+    <div class="wrapper">
+        <!--start top header-->
+        <header class="top-header">
+            <nav class="navbar navbar-expand">
+                <div class="mobile-toggle-icon d-xl-none">
+                    <i class="bi bi-list"></i>
+                </div>
+                <div class="top-navbar d-none d-xl-block">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search-toggle-icon d-xl-none ms-auto">
+                    <i class="bi bi-search"></i>
+                </div>
+                <form class="searchbar d-none d-xl-flex ms-auto">
+                    <div class="position-absolute top-50 translate-middle-y search-icon ms-3">
+                    {% comment %} <i class="bi bi-search"></i> {% endcomment %}
+                    </div>
+                    {% comment %} <input class="form-control" type="text" placeholder="Type here to search"> {% endcomment %}
+                    <div class="position-absolute top-50 translate-middle-y d-block d-xl-none search-close-icon"><i
+                            class="bi bi-x-lg"></i></div>
+                </form>
+                <div class="top-navbar-right ms-3">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item dropdown dropdown-large">
+                            <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                                data-bs-toggle="dropdown">
+                                <div class="user-setting d-flex align-items-center gap-1">
+                                    <img src="{% static 'dashboard/images/avatars/avatar-1.jpg' %}" class="user-img"
+                                        alt="">
+                                    <div class="user-name d-none d-sm-block">L&K | Admin</div>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{% static 'dashboard/images/avatars/avatar-1.png' %}" alt=""
+                                                class="rounded-circle" width="60" height="60">
+                                            <div class="ms-3">
+                                                <h6 class="mb-0 dropdown-user-name">L&K Service</h6>
+                                                <small class="mb-0 dropdown-user-designation text-secondary">Adminstrative</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <div class="d-flex align-items-center">
+                                            <div class="setting-icon"><i class="bi bi-person-fill"></i></div>
+                                            <div class="setting-text ms-3"><span>Profile</span></div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <div class="d-flex align-items-center">
+                                            <div class="setting-icon"><i class="bi bi-gear-fill"></i></div>
+                                            <div class="setting-text ms-3"><span>Setting</span></div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="">
+                                        <div class="d-flex align-items-center">
+                                            <div class="setting-icon"><i class="bi bi-lock-fill"></i></div>
+                                            <div class="setting-text ms-3"><span>Logout</span></div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown dropdown-large">
+                            <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                                data-bs-toggle="dropdown">
+                                <div class="projects">
+                                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <div class="row row-cols-3 gx-2">
+                                    <div class="col">
+                                        <a href="">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-white bg-primary bg-gradient">
+                                                    <i class="fas fa-users"></i>
+
+                                                </div>
+                                                <p class="mb-0 apps-name">Clients</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="javascript:;">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-white bg-danger bg-gradient">
+                                                    <i class="bi bi-people-fill"></i>
+                                                </div>
+                                                <p class="mb-0 apps-name">Employees</p>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div class="col">
+                                        <a href="ecommerce-products-grid.html">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-white bg-success bg-gradient">
+                                                    <i class="bi bi-person-circle"></i>
+                                                </div>
+                                                <p class="mb-0 apps-name">Users</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="component-media-object.html">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-white bg-orange bg-gradient">
+                                                    <i class="fas fa-money-bill"></i>
+
+                                                </div>
+                                                <p class="mb-0 apps-name">Payment</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="pages-user-profile.html">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-white bg-purple bg-gradient">
+                                                    <i class="fas fa-chart-bar"></i>
+
+                                                </div>
+                                                <p class="mb-0 apps-name">Reports</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="javascript:;">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-dark bg-info bg-gradient">
+                                                    <i class="fas fa-gavel"></i>
+
+
+                                                </div>
+                                                <p class="mb-0 apps-name">Tender</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="ecommerce-orders-detail.html">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-white bg-pink bg-gradient">
+                                                    <i class="fas fa-money-check"></i>
+
+                                                </div>
+                                                <p class="mb-0 apps-name">Salary</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="javascript:;">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-white bg-bronze bg-gradient">
+                                                    <i class="fas fa-file-invoice"></i>
+
+                                                </div>
+                                                <p class="mb-0 apps-name">Bill</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <a href="javascript:;">
+                                            <div class="apps p-2 radius-10 text-center">
+                                                <div class="apps-icon-box mb-1 text-dark bg-warning bg-gradient">
+                                                    <i class="fas fa-map-pin"></i>
+
+                                                </div>
+                                                <p class="mb-0 apps-name">Division</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!--end top header-->
+
+        <!--start sidebar -->
+        <aside class="sidebar-wrapper">
+            <div class="iconmenu">
+                <div class="nav-toggle-box">
+                    <div class="nav-toggle-icon"><i class="bi bi-list"></i></div>
+                </div>
+
+                <ul class="nav nav-pills flex-column">
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-dashboards"
+                            type="button"><i class="bi bi-grid-fill"></i></button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Master">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-application"
+                            type="button">
+                            <i class="fas fa-user-shield"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Employee">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#employee" type="button">
+                            <i class="fas fa-users"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Payroll">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#payrolls" type="button">
+                            <i class="fas fa-file-invoice-dollar"></i> <!-- Payroll -->
+
+                        </button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Verify">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-verification" type="button">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Approved-Payments">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-payments" type="button">
+                           <i class="fas fa-thumbs-up"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Check-Bills">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-bills" type="button">
+                           <i class="fas fa-search"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Bill-Reports">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-bill_reports" type="button">
+                           <i class="fas fa-file-invoice"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title="Tenders">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-tender" type="button">
+                           <i class="fas fa-feather-alt"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="right" title=" Users">
+                        <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-users" type="button">
+                           <i class="fas fa-user-friends"></i> <!-- Users -->
+
+                        </button>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="textmenu">
+                <div class="brand-logo">
+                    <a href="{% url 'admin_dashboard' %}"><img src="{% static 'dashboard/images/lkservicelogo.png' %}" width="170"
+                            alt="" /></a>
+                </div>
+
+                <div class="tab-content">
+
+                    <div class="tab-pane fade" id="pills-dashboards">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Dashboards</h5>
+                                </div>
+                                <small class="mb-0">See Reports Overally</small>
+                            </div>
+                            <a href="{% url 'admin_dashboard' %}" class="list-group-item"><i class="fas fa-tachometer-alt"></i>
+                            Dashboard</a>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-application">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Master</h5>
+                                </div>
+                                <small class="mb-0">Add / Manage Clients</small>
+                            </div>
+                            <a href="{% url 'HRMS:add_client' %}" class="list-group-item" style="display: none;"></i>Add Client</a>
+                            <a href="{% url 'HRMS:add_division' %}" class="list-group-item" style="display: none;">Add Client</a>
+                            {% comment %} <a href="{% url 'HRMS:update_client' client.id %}" class="list-group-item" style="display: none;">Update Client</a> {% endcomment %}
+
+                            <a href="{% url 'HRMS:client_lists' %}" class="list-group-item"><i class="fas fa-address-card"></i>Client</a>
+                            <a href="{% url 'HRMS:division_lists' %}" class="list-group-item"><i class="fas fa-puzzle-piece"></i>Division</a>
+                            <a href="{% url 'HRMS:add_servicecharge' %}" class="list-group-item"><i class="fas fa-coins"></i>Client Service Charges</a>
+                            <a href="{% url 'HRMS:client_estimatebilling' %}" class="list-group-item"><i class="fas fa-calculator"></i>Client Estimate Billing</a>
+                            <a href="{% url 'HRMS:inactive_client' %}" class="list-group-item"><i class="fas fa-user-slash"></i>Inactive Client List</a>
+                            <a href="{% url 'HRMS:inactive_division' %}" class="list-group-item"><i class="fas fa-ban"></i> Inactive Division List</a>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="employee">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Employee</h5>
+                                </div>
+                                <small class="mb-0">Manage Employee Informations</small>
+                            </div>
+                            <a href="{% url 'HRMS:add_employee' %}" class="list-group-item"><i class="fas fa-user-plus"></i>Add Employee</a>
+                            <a href="{% url 'HRMS:employee_list' %}" class="list-group-item"><i class="fas fa-users"></i>Employee List</a>
+                            <a href="{% url 'HRMS:edit_employee' %}" class="list-group-item"><i class="fas fa-pencil-alt"></i>Edit Employee</a>
+                            <a href="{% url 'HRMS:update_employee_division' %}" class="list-group-item"><i class="fas fa-sync"></i>Update Employee Division</a>
+                            <a href="{% url 'HRMS:loan_advance_details' %}" class="list-group-item"><i class="fas fa-credit-card"></i>Employee Loan/Advance</a>
+                            <a href="{% url 'HRMS:add_loan' %}" class="list-group-item" style="display: none;"><i class="fas fa-credit-card" ></i>Add Employee Loan/Advance</a>
+                            <a href="{% url 'HRMS:salary_update_request' %}" class="list-group-item"><i class="fas fa-file-signature"></i>Employee Salary Update Request</a>
+                            <a href="{% url 'HRMS:salary_salary_approval' %}" class="list-group-item"><i class="fas fa-check-circle"></i>Employee Salary Approval</a>
+                            <a href="{% url 'HRMS:salary_update_status' %}" class="list-group-item"><i class="fas fa-info-circle"></i>Employee Salary Update Status</a>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-verification">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Verify</h5>
+                                </div>
+                                <small class="mb-0">Employee Payments</small>
+                            </div>
+                            <a href="{% url 'HRMS:salary_Function' %}" class="list-group-item"><i class="fas fa-piggy-bank"></i> Employee Salary</a>
+                            <a href="{% url 'HRMS:epf_Function' %}" class="list-group-item"><i class="fas fa-piggy-bank"></i> Employee EPF</a>
+                            <a href="{% url 'HRMS:esi_Function' %}" class="list-group-item"><i class="fas fa-medkit"></i> Employee ESI</a>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane fade" id="payrolls">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Pay Roll</h5>
+                                </div>
+                                <small class="mb-0">Fetch Payroll Data</small>
+                            </div>
+                            <a href="#" class="list-group-item" data-bs-toggle="collapse" data-bs-target="#AttendanceDrop" aria-expanded="false">
+                                <i class="far fa-calendar-check"></i>Attendance<i class="fas fa-caret-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="AttendanceDrop">
+                                <a href="{% url 'HRMS:Add_attendance_function' %}" class="list-group-item"><i class="far fa-calendar-check"></i> Attendance Process</a>
+                                <a href="{% url 'HRMS:Edit_attendance_function' %}" class="list-group-item"><i class="far fa-edit"></i> Edit Attendance</a>
+                                <a href="{% url 'HRMS:Approve_attendance_function' %}" class="list-group-item"><i class="fas fa-check-circle"></i> Attendance Approval</a>
+                                <!-- Add more icons and items here as needed -->
+                            </div>
+                            
+
+                            <a href="#" class="list-group-item mt-1" data-bs-toggle="collapse" data-bs-target="#salaryDropdown" aria-expanded="false">
+                                <i class="fas fa-money-bill-wave"></i>Salary<i class="fas fa-caret-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="salaryDropdown">
+                                <a href="{% url 'HRMS:Add_salary_function' %}" class="list-group-item"><i class="fas fa-money-bill-wave"></i> Salary Process</a>
+                                <a href="{% url 'HRMS:edit_salary_function' %}" class="list-group-item"><i class="far fa-edit"></i> Edit Salary</a>
+                                <a href="{% url 'HRMS:Approve_salary_function' %}" class="list-group-item"><i class="fas fa-check-circle"></i> Salary Approval</a>
+                                <a href="#" class="list-group-item"><i class="far fa-file-alt"></i> Salary Status</a>
+                                <!-- Add more icons and items here as needed -->
+                            </div>
+
+                            <a href="#" class="list-group-item mt-1" data-bs-toggle="collapse" data-bs-target="#epfDropdown" aria-expanded="false">
+                                <i class="fas fa-money-check-alt"></i>EPF<i class="fas fa-caret-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="epfDropdown">
+                                <a href="#" class="list-group-item"><i class="fas fa-money-bill-wave"></i> EPF Process</a>
+                                <a href="#" class="list-group-item"><i class="fas fa-check-circle"></i> EPF Approval</a>
+                                <a href="#" class="list-group-item"><i class="far fa-file-alt"></i> EPF Status</a>
+                                <a href="#" class="list-group-item"><i class="fas fa-file-invoice-dollar"></i> EPF Challan Submit</a>
+                                <!-- Add more icons and items here as needed -->
+                            </div>
+
+                            <a href="#" class="list-group-item mt-1" data-bs-toggle="collapse" data-bs-target="#esiDropdown" aria-expanded="false">
+                                <i class="fas fa-file-invoice-dollar"></i>ESI<i class="fas fa-caret-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="esiDropdown">
+                                <a href="#" class="list-group-item"><i class="fas fa-money-bill-wave"></i> ESI Process</a>
+                                <a href="#" class="list-group-item"><i class="fas fa-check-circle"></i> ESI Approval</a>
+                                <a href="#" class="list-group-item"><i class="fas fa-file-alt"></i> ESI Status</a>
+                                <a href="#" class="list-group-item"><i class="fas fa-file-invoice-dollar"></i> ESI Challan Submit</a>
+                                <!-- Add more icons and items here as needed -->
+                            </div>
+
+                            <a href="#" class="list-group-item mt-1" data-bs-toggle="collapse" data-bs-target="#ArrearDropdown" aria-expanded="false">
+                                <i class="fas fa-file-invoice-dollar"></i>Arrear Salary<i class="fas fa-caret-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="ArrearDropdown">
+                                <a href="#" class="list-group-item"><i class="fas fa-file-invoice-dollar"></i> Arrear Process</a>
+                                <a href="#" class="list-group-item"><i class="fas fa-edit"></i> Edit Arrear</a>
+                                <a href="#" class="list-group-item"><i class="fas fa-check-circle"></i> Arrear Approval</a>
+                                <!-- Add more icons and items here as needed -->
+                            </div>
+
+                            <a href="#" class="list-group-item mt-1" data-bs-toggle="collapse" data-bs-target="#ArrearEPFDropdown" aria-expanded="false">
+                                <i class="fas fa-file-invoice-dollar"></i>Arrear EPF<i class="fas fa-caret-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="ArrearEPFDropdown">
+                                <a href="#" class="list-group-item"><i class="fas fa-file-invoice-dollar"></i>EPF Arrear Process</a>
+                                <a href="#" class="list-group-item"><i class="fas fa-check-circle"></i>EPF Arrear Approval</a>
+                                <!-- Add more icons and items here as needed -->
+                            </div>
+                            
+                            
+                            
+                            
+                            
+
+                            
+                        </div>
+                    </div>
+                    
+
+                    <div class="tab-pane fade" id="pills-payments">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Verify</h5>
+                                </div>
+                                <small class="mb-0">Employee Payments</small>
+                            </div>
+                            <a href="{% url 'HRMS:approved_salary_payment' %}" class="list-group-item"><i class="fas fa-check-circle"></i>
+                            Approved  Salary Payment</a>
+                            <a href="{% url 'HRMS:approved_epf_deposite' %}" class="list-group-item"><i class="fas fa-money-check"></i>
+                            Approved EPF Deposit</a>
+                            <a href="{% url 'HRMS:approved_esi_deposite' %}" class="list-group-item"><i class="fas fa-clipboard-check"></i>
+                            Approved ESI Deposite</a>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-bills">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Verify Bills</h5>
+                                </div>
+                                <small class="mb-0">Manage Bill Informations</small>
+                            </div>
+                            <a href="{% url 'HRMS:bill_entry' %}" class="list-group-item"><i class="fas fa-edit"></i>
+                            Bill Entry</a>
+                            <a href="{% url 'HRMS:bill_receive' %}" class="list-group-item"><i class="fas fa-check-circle"></i>
+                            Bill Recived</a>
+                            <a href="{% url 'HRMS:client_expenditure' %}" class="list-group-item"><i class="fas fa-dollar-sign"></i>
+                            Client Expenditure</a>
+                            <a href="{% url 'HRMS:generate_bill' %}" class="list-group-item"><i class="fas fa-file-invoice"></i>
+                            Genereate Bill</a>
+                            <a href="{% url 'HRMS:proforma_bill' %}" class="list-group-item"><i class="fas fa-file-invoice"></i>
+                            Bill Invoice</a>
+                            <a href="{% url 'HRMS:bill_approval' %}" class="list-group-item"><i class="fas fa-check-circle"></i>
+                            Bill Approval</a>
+                            <a href="{% url 'HRMS:bill_disapproval' %}" class="list-group-item"><i class="fas fa-times-circle"></i>
+                            Bill DisApproval</a>
+                            <a href="{% url 'HRMS:gst_bill_prepare' %}" class="list-group-item"><i class="fas fa-file-invoice"></i> <i class="fas fa-balance-scale"></i>
+                            GST Bill Prepare</a>
+                            <a href="{% url 'HRMS:gst_bill_pending' %}" class="list-group-item"><i class="fas fa-clock"></i>
+                            GST Bill Pending</a>
+                        </div>
+
+                    </div>
+                    
+                    <div class="tab-pane fade" id="pills-bill_reports">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Bill Reports</h5>
+                                </div>
+                                <small class="mb-0">Manage Reports Data</small>
+                            </div>
+                            <a href="{% url 'HRMS:bill_submitted' %}" class="list-group-item"><i class="fas fa-file-invoice"></i>Bill Submitted</a>
+                            <a href="{% url 'HRMS:bill_received' %}" class="list-group-item"><i class="fas fa-envelope"></i>Bill Received</a>
+                            <a href="{% url 'HRMS:expenditure_report' %}" class="list-group-item"><i class="fas fa-chart-bar"></i>Expenditure Reports</a>
+                            <a href="{% url 'HRMS:bill_outstanding' %}" class="list-group-item"><i class="fas fa-dollar-sign"></i>Bill Outstanding</a>
+                            <a href="{% url 'HRMS:client_profit_loss_statement' %}" class="list-group-item"><i class="fas fa-chart-line"></i>Client Profit/Lose Statement</a>
+                            <a href="{% url 'HRMS:gst_received_reports' %}" class="list-group-item"><i class="fas fa-percent"></i>GST Received Reports</a>
+                            <a href="{% url 'HRMS:tds_reports' %}" class="list-group-item"><i class="fas fa-file-alt"></i>TDS Reports</a>
+                            <a href="{% url 'HRMS:date_wise_bill_received' %}" class="list-group-item"><i class="fas fa-calendar"></i>Date Wise Bill Received</a>
+                            <a href="{% url 'HRMS:month_wise_bill_register' %}" class="list-group-item"><i class="fas fa-calendar"></i> Month Wise Bill Register</a>
+                            <a href="{% url 'HRMS:payment_not_received' %}" class="list-group-item"><i class="fas fa-exclamation-triangle"></i>Payment Not Received</a>
+                            <a href="{% url 'HRMS:bill_not_despatched' %}" class="list-group-item"><i class="fas fa-truck"></i>Bill Not Despatched</a>
+                            <a href="{% url 'HRMS:date_wise_bill_submited' %}" class="list-group-item"><i class="fas fa-calendar-check"></i>Date Wise Bill Submited</a>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-tender">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Tender</h5>
+                                </div>
+                                <small class="mb-0">Manage Tender Data</small>
+                            </div>
+                            <a href="{% url 'HRMS:company_essential_documents' %}" class="list-group-item"><i class="fas fa-briefcase"></i>Company Essential Documents</a>
+                            <a href="{% url 'HRMS:tenders' %}" class="list-group-item"><i class="fas fa-list-ul"></i>Tenders</a>
+                            <a href="{% url 'HRMS:tender_prepration' %}" class="list-group-item"><i class="fas fa-file-signature"></i>Tender Prepration</a>
+                            <a href="{% url 'HRMS:tender_financial_bid' %}" class="list-group-item"><i class="fas fa-hand-holding-usd"></i>Tender Financial Bid</a>
+                            <a href="{% url 'HRMS:tender_status_upload' %}" class="list-group-item"><i class="fas fa-upload"></i>Tender Status Upload</a>
+                            <a href="{% url 'HRMS:tender_submited' %}" class="list-group-item"><i class="fas fa-check-circle"></i>Tender Submited</a>
+                            <a href="{% url 'HRMS:tender_not_submited' %}" class="list-group-item"><i class="fas fa-times-circle"></i>Tender Not Submited</a>
+                            <a href="{% url 'HRMS:tender_expired' %}" class="list-group-item"><i class="fas fa-clock"></i>Tender Expired</a>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-users">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-0">Users</h5>
+                                </div>
+                                <small class="mb-0">Manage Users Informations</small>
+                            </div>
+                            <a href="{% url 'HRMS:create_users' %}" class="list-group-item"><i class="fas fa-user-plus"></i>Create Users</a>
+                            <a href="{% url 'HRMS:add_new_user' %}" class="list-group-item" style="display: none;"><i class="fas fa-user-plus"></i>Add Users</a>
+                            <a href="{% url 'HRMS:menu_access' %}" class="list-group-item"><i class="fas fa-list-alt"></i>Menu Access</a>
+                            <a href="{% url 'HRMS:user_status_review' %}" class="list-group-item"><i class="fas fa-user-check"></i>User Status Review</a>
+                            <a href="{% url 'HRMS:branch_status_review' %}" class="list-group-item"><i class="fas fa-building"></i>Branch Status Review</a>
+                            <a href="{% url 'HRMS:monthly_status_review' %}" class="list-group-item"><i class="far fa-calendar-check"></i>Monthly Status Review</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </aside>
+
+
+        <main class="page-content">
+
+            {% block content %}
+
+            {% endblock content %}
+
+
+        </main>
+
+        <!--start overlay-->
+        <div class="overlay nav-toggle-icon"></div>
+        <!--end overlay-->
+
+        <!--Start Back To Top Button-->
+        <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+        <!--End Back To Top Button-->
+
+        <!--start switcher-->
+        
+        <!--end switcher-->
+
+    </div>
+    <!--end wrapper-->
+
+
+    <!-- Bootstrap bundle JS -->
+    <script src="{% static 'dashboard/js/bootstrap.bundle.min.js' %}"></script>
+    <!--plugins-->
+    <script src="{% static 'dashboard/js/jquery.min.js' %}"></script>
+    <script src="{% static 'dashboard/plugins/simplebar/js/simplebar.min.js' %}"></script>
+    <script src="{% static 'dashboard/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'dashboard/js/pace.min.js' %}"></script>
+    <script src="{% static 'dashboard/plugins/vectormap/jquery-jvectormap-2.0.2.min.js' %}"></script>
+    <script src="{% static 'dashboard/plugins/vectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+    <script src="{% static 'dashboard/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
+    <script src="{% static 'dashboard/plugins/chartjs/chart.min.js' %}"></script>
+    <!--app-->
+    <script src="{% static 'dashboard/js/app.js' %}"></script>
+    <script src="{% static 'dashboard/js/index.js' %}"></script>
+
+    <!-- data Table  -->
+    <script src="{% static 'dashboard/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'dashboard/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/table-datatable.js' %}"></script>
+
+    <script>
+        new PerfectScrollbar(".best-product")
+        new PerfectScrollbar(".top-sellers-list")
+    </script>
+
+
+</body>
+
+
+<!-- Mirrored from codervent.com/skodash/demo/tabular-menu/ltr/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 11 Sep 2023 05:28:46 GMT -->
+
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Loans</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <!-- Js For dob -->
+    <script src="/employee/js/dob.js"></script>
+
+    <!-- SweetAlert library cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <!-- Jquery cdn -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+        }
+
+        /* Add border to the container */
+        .custom-border {
+            border: 1px solid #ccc;
+            padding: 20px;
+            /* Add some padding for better appearance */
+            border-radius: 8px;
+        }
+    </style>
+
+    <!-- JS for  instalment amount calculation-->
+    <script>
+        $(document).ready(function () {
+            $("#loanAmount, #numInstallments").on("input", function () {
+                var loanAmount = parseFloat($("#loanAmount").val());
+                var numInstallments = parseFloat($("#numInstallments").val());
+
+                if (!isNaN(loanAmount) && !isNaN(numInstallments) && numInstallments !== 0) {
+                    var installmentAmount = loanAmount / numInstallments;
+                    $("#installmentAmount").val(installmentAmount % 1 === 0 ? installmentAmount.toFixed(0) : installmentAmount.toFixed(2));
+                } else {
+                    $("#installmentAmount").val("");
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container mt-5 fade-in custom-border" onsubmit="return validateDate()">
+        <form action="">
+            <!-- Client Details -->
+            <h3 class="text-center mb-4 text-primary">Loans and Advance Details</h3>
+            <hr>
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Employee Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" aria-describedby="" pattern="[A-Za-z\s]+"
+                        title="Please enter a valid Employee name. Only letters and spaces are allowed." required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Client<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" aria-describedby="" disabled>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Division<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" aria-describedby="" disabled>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Desigination<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" aria-describedby="" disabled>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Department<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" aria-describedby="clientCodeHelp" disabled>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Loan/Advance Amount<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="loanAmount" aria-describedby="clientCodeHelp">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">No. Of Instalment<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="numInstallments" aria-describedby="clientCodeHelp">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Instalment Amount<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="installmentAmount" aria-describedby="clientCodeHelp"
+                        disabled>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="clientcode" class="form-label text-dark">Start Month<span
+                            class="text-danger">*</span></label>
+                    <select class="form-select" id="monthSelect">
+                        <option value="" disabled selected>Select a month</option>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="clientcode" class="form-label text-dark">Start Year<span
+                            class="text-danger">*</span></label>
+                    <select class="form-select" id="" name="">
+                        <option selected disabled>Select a year</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <label for="clientcode" class="form-label text-dark">Loan/Advance Application Copy&nbsp;(In PDF
+                        Only)<span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" id="" aria-describedby="clientCodeHelp" accept=".pdf"
+                        required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success me-md-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-send"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+                </svg>
+                Save
+            </button>
+            <button type="button" class="btn btn-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-x"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+                Cancel
+            </button>
+        </form>
+    </div>
+
+
+    <!-- Bootstrap 5 JS and Popper.js CDN (for Bootstrap functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+    <script>
+        // Add the "active" class to trigger the fade-in animation when the document is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container.fade-in');
+            container.classList.add('active');
+        });
+    </script>
+
+    <!-- JS for D.O.B -->
+    <!-- <script>
+        function validateDate() {
+            const dobInput = document.getElementById('dob');
+            const enteredDate = new Date(dobInput.value);
+            const currentDate = new Date();
+
+            if (enteredDate > currentDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid D.O.B',
+                    text: 'Please select a date of birth in the past.'
+                });
+                dobInput.value = '';
+            }
+        }
+    </script> -->
+
+
+</body>
+
+</html>

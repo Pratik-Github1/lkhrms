@@ -1,0 +1,78 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <div class="row row-sm mt-5">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between;">
+                    <h3 class="card-title">Bill Details</h3>
+                    <a href="{% url 'HRMS:add_new_bill' %}">Add New Bill</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable" >
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Client Name</th>
+                                    <th>Bill Month</th>
+                                    <th>Bill No.</th>
+                                    <th>Bill Date</th>
+                                    <th>Strength</th>
+                                    <th>Bill Amount</th>
+                                    <th>Upload Copy</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in bill %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{i.bid.cid.ccode}}-{{i.bid.cid.cname}}</td>
+                                    <td>{{i.bid.yearmonth}}</td>
+                                    <td>{{i.bid.billno}}</td>
+                                    <td>{{ i.bid.billdate|date:"j-F-Y" }}</td>
+                                    <td>{{i.str}}</td>
+                                    <td>{{i.total}}</td>
+                                    <td style="color: green;">Upload</td>
+                                    <td style="color: green;">Edit</td>
+                                </tr>
+                                {% endfor %}    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+<script>
+    // Calculate and display total expenditure for each row
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("tbody tr").forEach(function (row, index) {
+            const material = parseFloat(row.querySelector("td:nth-child(5)").textContent);
+            const fuel = parseFloat(row.querySelector("td:nth-child(6)").textContent);
+            const operational = parseFloat(row.querySelector("td:nth-child(7)").textContent);
+            const other = parseFloat(row.querySelector("td:nth-child(8)").textContent);
+            const travel = parseFloat(row.querySelector("td:nth-child(9)").textContent);
+
+            const total = material + fuel + operational + other + travel;
+
+            const totalExprCell = row.querySelector(`#total-expr-${index + 1}`);
+            totalExprCell.textContent = total.toFixed(2); // Adjust the number of decimal places as needed
+        });
+    });
+</script>
+</html>
+
+{% endblock content %}

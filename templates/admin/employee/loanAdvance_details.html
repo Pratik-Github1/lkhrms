@@ -1,0 +1,56 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+
+
+<div class="row row-sm mt-5">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Employee Loan Details</h3>
+                <a href="{% url 'HRMS:add_loan' %}">New Loan</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable" >
+                        <thead>
+                            <tr>
+                                <th style="font-size: 11px;">Sl No</th>
+                                <th style="font-size: 11px;">Employee Code</th>
+                                <th style="font-size: 11px;">Employee Name</th>
+                                <th style="font-size: 11px;">Desgination</th>
+                                {% comment %} <th style="font-size: 11px;">Client Name</th> {% endcomment %}
+                                {% comment %} <th style="font-size: 11px;">Division Name</th> {% endcomment %}
+                                <th style="font-size: 11px;">Start MonthYear</th>
+                                <th style="font-size: 11px;">Loan Amnt.</th>
+                                <th style="font-size: 11px;">No Of Inst.</th>
+                                <th style="font-size: 11px;">Inst. Amnt</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 10px;">
+                            {% for loan in loans %}
+                            
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{loan.empcode}}</td>
+                                    <td>{{loan.empid.empname}}</td>
+                                    <td>{{loan.empid.desgination}}</td>
+                                    {% comment %} <td>{{loan.empid.cid.cname}}</td> {% endcomment %}
+                                    {% comment %} <td>{{loan.empid.did.division}}</td> {% endcomment %}
+                                    <td>{{loan.startyearmonth}}</td>
+                                    <td>{{loan.loanamount}}</td>
+                                    <td>{{loan.noinst}}</td>
+                                    <td>{{loan.instamount}}</td>
+                                    
+                                </tr>
+                            {% endfor %}    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

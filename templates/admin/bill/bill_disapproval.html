@@ -1,0 +1,429 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<style>
+    /* Style for the searchbox row */
+    #searchbox {
+        background-color: rgb(240, 234, 226);
+        padding: 10px;
+    }
+
+    /* Style for the input fields */
+    .form-control {
+        font-size: 14px;
+    }
+
+    /* Style for the buttons */
+    .btn-primary {
+       font-size: 12px;
+    } 
+    #searchClientForm {
+        margin-top: 10px;
+    }
+</style>
+
+<body>
+    <div class="row" id="searchbox">
+        <form method="get" id="searchClientForm">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <input type="text" class="form-control" id="client_input" name="client_name" placeholder="Enter Client Name">
+                    <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <select name="division_name" class="form-control" id="division_select">
+                        <option value="" selected disabled>Select Division</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+        <form method="get" id="searchMonthYearForm">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <select class="form-control" id="selected_month" name="selected_month">
+                        <option selected disabled>---Select Month---</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>  
+                </div>
+                <div class="col-md-3 mb-3">
+                    <select class="form-control" id="selected_year" name="selected_year">
+                        <option value="" selected disabled>Select Year</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+        
+        <form method="get" id="BillNoForm">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <input type="text" class="form-control" id="BillNo" name="bill_no" placeholder="Enter Bill Name">
+                </div>
+                
+                <div class="col-md-3 mb-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if bills %}
+    <div class="card shadow">
+        <div class="card-header p-3">
+            <strong>
+                Employee Bill Details
+            </strong>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="font-size: 11px;">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Division</th>
+                            <th>Year-Month</th>
+                            <th>Bill Date</th>
+                            <th>Bill No</th>
+                            <th>Total Bill</th>
+                            <th>GST</th>
+                            <th>Approve</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in bills %}
+                        <tr>
+                            <td>{{ bill.cid.cname }}</td>
+                            <td>{{ bill.did.division }}</td>
+                            <td>{{ bill.yearmonth }}</td>
+                            <td>{{ bill.billdate|date:'Y-m-d' }}</td>
+                            <td>{{ bill.billno }}</td>
+                            <td>{{ bill.totalbill }}</td>
+                            <td>{{ bill.gst }}</td>
+                            <td style="{% if bill.approve == 0 %}color: red;{% endif %}">
+                                {% if bill.approve == 0 %}Not Approved{% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot style="font-size: 10px;">
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Division</th>
+                            <th>Year-Month</th>
+                            <th>Bill Date</th>
+                            <th>Bill No</th>
+                            <th>Total Bill</th>
+                            <th>GST</th>
+                            <th>Approve</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if yEARbills %}
+    <div class="card shadow">
+        <div class="card-header p-3">
+            <strong>
+                Employee Bill Details
+            </strong>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="font-size: 11px;">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Division</th>
+                            <th>Year-Month</th>
+                            <th>Bill Date</th>
+                            <th>Bill No</th>
+                            <th>Total Bill</th>
+                            <th>GST</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in yEARbills %}
+                        <tr>
+                            <td>{{ bill.cid.cname }}</td>
+                            <td>{{ bill.did.division }}</td>
+                            <td>{{ bill.yearmonth }}</td>
+                            <td>{{ bill.billdate|date:'Y-m-d' }}</td>
+                            <td>{{ bill.billno }}</td>
+                            <td>{{ bill.totalbill }}</td>
+                            <td>{{ bill.gst }}</td>
+                            <td style="{% if bill.approve == 0 %}color: red;{% endif %}">
+                                {% if bill.approve == 0 %}Not Approved{% endif %}
+                            </td>
+                            
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot style="font-size: 10px;">
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Division</th>
+                            <th>Year-Month</th>
+                            <th>Bill Date</th>
+                            <th>Bill No</th>
+                            <th>Total Bill</th>
+                            <th>GST</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if billsNo %}
+    <div class="card shadow">
+        <div class="card-header p-3">
+            <strong>
+                Employee Bill Details
+            </strong>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="font-size: 11px;">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Division</th>
+                            <th>Year-Month</th>
+                            <th>Bill Date</th>
+                            <th>Bill No</th>
+                            <th>Total Bill</th>
+                            <th>GST</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in billsNo %}
+                        <tr>
+                            <td>{{ bill.cid.cname }}</td>
+                            <td>{{ bill.did.division }}</td>
+                            <td>{{ bill.yearmonth }}</td>
+                            <td>{{ bill.billdate|date:'Y-m-d' }}</td>
+                            <td>{{ bill.billno }}</td>
+                            <td>{{ bill.totalbill }}</td>
+                            <td>{{ bill.gst }}</td>
+                            <td style="{% if bill.approve == 0 %}color: red;{% endif %}">
+                                {% if bill.approve == 0 %}Not Approved{% endif %}
+                            </td>
+                            
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot style="font-size: 10px;">
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Division</th>
+                            <th>Year-Month</th>
+                            <th>Bill Date</th>
+                            <th>Bill No</th>
+                            <th>Total Bill</th>
+                            <th>GST</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    {% if messages %}
+    {% for message in messages %}
+           <p style="color:brown ;">{{ message }}</p> 
+        {% endfor %}
+    {% endif %}
+
+
+</body>
+<!-- billapp/templates/billapp/bill_approval.html -->
+<!-- <script>
+    function fetchData() {
+        var clientName = $('#client_input').val();
+        var divisionName = $('#division_select').val();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'HRMS:searchclienTdivisioN_bills' %}",  // URL for the search view
+            data: {
+                'client_name': clientName,
+                'division_name': divisionName
+            },
+            dataType: 'json',
+            beforeSend: function(xhr, settings) {
+                // Manually set the CSRF token in the request headers
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function (data) {
+                // Update the table with the fetched data
+                var tbody = $('#clientResultsTable tbody');
+                tbody.empty();  // Clear previous results
+
+                if (data.bills.length > 0) {
+                    $.each(data.bills, function (index, bill) {
+                        var row = '<tr>' +
+                            '<td>' + bill.client_name + '</td>' +
+                            '<td>' + bill.division_name + '</td>' +
+                            '<td>' + bill.year_month + '</td>' +
+                            '<td>' + bill.bill_date + '</td>' +
+                            '<td>' + bill.bill_no + '</td>' +
+                            '<td>' + bill.total_bill + '</td>' +
+                            '<td>' + bill.gst + '</td>' +
+                            '</tr>';
+                        tbody.append(row);
+                    });
+                } else {
+                    // Display a message if no results were found
+                    tbody.append('<tr><td colspan="7">No results found.</td></tr>');
+                }
+
+                // Display the table by setting its style.display to "table"
+                $('#clientResultsTable').show();
+            }
+        });
+    }
+
+    // Helper function to retrieve the CSRF token from cookies
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Check if this cookie has the correct name (csrftoken)
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    // Extract and decode the CSRF token
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script> -->
+
+<script>
+    const clientNameInput = document.getElementById("client_input");
+    const clientSuggestions = document.getElementById("client_suggestions");
+
+    clientNameInput.addEventListener("input", function () {
+        const keyword = this.value.trim();
+
+        if (keyword) {
+            fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                .then(response => response.json())
+                .then(data => {
+                    const clients = data.clients.slice(0, 10); // Get the first 10 clients
+                    const suggestions = clients.map(client_name => `<div class="suggestion">${client_name}</div>`).join("");
+                    clientSuggestions.innerHTML = suggestions;
+
+                    // Handle click on a suggestion
+                    const suggestionElements = document.querySelectorAll(".suggestion");
+                    suggestionElements.forEach(suggestion => {
+                        suggestion.addEventListener("click", function () {
+                            clientNameInput.value = suggestion.textContent;
+                            clientSuggestions.innerHTML = ""; // Clear suggestions
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error("An error occurred while fetching user suggestions:", error);
+                });
+        } else {
+            clientSuggestions.innerHTML = "";
+        }
+    });
+  
+</script>
+<script>
+    function fetchDivisions() {
+        const clientName = document.getElementById("client_input").value;
+        const divisionSelect = document.getElementById("division_select");
+
+        $.ajax({
+            url: "{% url 'HRMS:fetch_divisions' %}",
+            data: { client_name: clientName },
+            dataType: "json",
+            success: function (data) {
+                divisionSelect.innerHTML = ""; // Clear previous options
+                divisionSelect.options[divisionSelect.options.length] = new Option("Select Division", "");
+
+                data.divisions.forEach(function (division) {
+                    divisionSelect.options[divisionSelect.options.length] = new Option(division.division, division.division);
+                });
+            },
+            error: function (error) {
+                console.error("An error occurred while fetching divisions:", error);
+            }
+        });
+    }
+
+    // Handle click on a suggestion
+    document.getElementById("client_suggestions").addEventListener("click", function (event) {
+        if (event.target.classList.contains("suggestion")) {
+            const clickedSuggestion = event.target.textContent;
+            document.getElementById("client_input").value = clickedSuggestion;
+            fetchDivisions(); // Fetch divisions when a suggestion is clicked
+        }
+    });
+</script>
+
+</html>
+
+{% endblock content %}

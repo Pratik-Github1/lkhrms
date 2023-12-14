@@ -1,0 +1,294 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="card shadow mt-5">
+
+        <div class="card-header" style="display: flex; justify-content: space-between;">
+            <h3 class="card-title">Edit Salary Details</h3>
+            <button class="btn btn-sm btn-warning" onclick="goBack()">Back</button>
+        </div>
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+
+        <div class="card-body">
+            <div class="row">
+                <form method="POST" id="EDITfORM">
+                    {% csrf_token %}
+                    <div class="row w-100 ">
+                        <div class="col-md-5 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Client Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="client_input" name="client_name" placeholder="Enter Client Name" required>
+                            <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="form-label text-dark">Division<span class="text-danger">*</span></label>
+                            <select name="sa" class="form-control" id="division_select">
+                                <option value="" selected disabled>Select Division</option>
+                            </select>
+                            <input type="hidden" id="division_name" name="division_name">
+            
+                        </div>
+            
+                        <script>
+                            const clientNameInput = document.getElementById("client_input");
+                            const clientSuggestions = document.getElementById("client_suggestions");
+                        
+                            clientNameInput.addEventListener("input", function () {
+                                const keyword = this.value.trim();
+                        
+                                if (keyword) {
+                                    fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const clients = data.clients;
+                                            const suggestions = clients.map(client => `<div class="suggestion">${client.ccode} - ${client.cname}</div>`).join("");
+                                            clientSuggestions.innerHTML = suggestions;
+                        
+                                            // Handle click on a suggestion
+                                            const suggestionElements = document.querySelectorAll(".suggestion");
+                                            suggestionElements.forEach(suggestion => {
+                                                suggestion.addEventListener("click", function () {
+                                                    clientNameInput.value = suggestion.textContent;
+                                                    clientSuggestions.innerHTML = ""; // Clear suggestions
+                                                });
+                                            });
+                                        })
+                                        .catch(error => {
+                                            console.error("An error occurred while fetching user suggestions:", error);
+                                        });
+                                } else {
+                                    clientSuggestions.innerHTML = "";
+                                }
+                            });
+                        
+                            function fetchDivisions() {
+                                const clientName = clientNameInput.value;
+                                const divisionSelect = document.getElementById("division_select");
+                        
+                                $.ajax({
+                                    url: "{% url 'HRMS:fetch_divisions' %}",
+                                    data: { client_name: clientName },
+                                    dataType: "json",
+                                    success: function (data) {
+                                        divisionSelect.innerHTML = ""; // Clear previous options
+                                        divisionSelect.options[divisionSelect.options.length] = new Option("Select Division", "");
+                        
+                                        data.divisions.forEach(function (division) {
+                                            // Include the division ID as a data attribute
+                                            divisionSelect.options[divisionSelect.options.length] = new Option(division.division, division.division);
+                                            divisionSelect.options[divisionSelect.options.length - 1].setAttribute("data-division-id", division.did);
+                                        });
+                                    },
+                                    error: function (error) {
+                                        console.error("An error occurred while fetching divisions:", error);
+                                    }
+                                });
+                            }
+                        
+                            // Handle click on a suggestion
+                            document.getElementById("client_suggestions").addEventListener("click", function (event) {
+                                if (event.target.classList.contains("suggestion")) {
+                                    const clickedSuggestion = event.target.textContent;
+                                    clientNameInput.value = clickedSuggestion;
+                                    fetchDivisions(); // Fetch divisions when a suggestion is clicked
+                                }
+                            });
+                        
+                            // Handle change in division select
+                            document.getElementById("division_select").addEventListener("change", function () {
+                                const selectedOption = this.options[this.selectedIndex];
+                                const selectedDivision = selectedOption.value;
+                                const selectedDivisionId = selectedOption.getAttribute("data-division-id");
+                        
+                                document.getElementById("division_name").value = selectedDivision;
+                                document.getElementById("division_id").value = selectedDivisionId;
+                            });
+                        </script>
+                        
+                        <input type="hidden" id="division_id" name="division_id">
+                        
+                        <div class="col-md-3 " style="margin-top: 33px;">
+                            <button type="submit" class="btn btn-sm btn-primary">Search</button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-sm mt-5">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between;">
+                    <h3 class="card-title">Salary Details</h3>
+                    
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable">
+                            <thead>
+                                <tr>
+                                    <th>Client Name</th>
+                                    <th>Division Name</th>
+                                    <th>Year-Month</th>
+                                    <th>Total Employees</th>
+                                    <th>Total Salary</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if salary_records %}
+                                    {% for record in salary_records %}
+                                        <tr>
+                                            <td>{{ record.cid.cname }}</td>
+                                            <td>{{ record.did.division }}</td>
+                                            <td>{{ record.attnyearmonth }}</td>
+                                            <td>{{ record.totalemp }}</td>
+                                            <td>{{ record.totalsalary }}</td>
+                                            <td> 
+                                                
+                                                {% if record.submitsts == 1 %}
+                                                <a href="{% url 'HRMS:view_salary' record.sid %}">View</a>
+                                                {% else %}
+                                                <a href="{% url 'HRMS:view_salary' record.sid %}">View</a>
+                                                    <a href="#">Edit</a>
+                                                    <a href="#" class="delete-salary" data-header-id="{{ record.sid }}">Delete</a>
+                                                    <a href="#" class="submit-salary" data-header-id="{{ record.sid }}" >Submit</a>
+                                                {% endif %}
+                                            
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5">No records found</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function() {
+        $(".submit-salary").click(function() {
+            const recordId = $(this).data("header-id");
+            
+            // Show a confirmation dialog
+            Swal.fire({
+                icon: 'question',
+                title: 'Confirm Submission',
+                text: 'Are you sure you want to Submit this Salary?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Submit it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User confirmed, send the approval request
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'HRMS:submit_salary' %}",
+                        data: {
+                            record_id: recordId,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Success: Show a success alert
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Salary Submitted',
+                                    text: 'The Salary has been Submitted successfully!',
+                                }).then((result) => {
+                                    location.reload();
+                                });
+                            } else {
+                                // Error: Show an error alert
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An error occurred: ' + response.error_message,
+                                });
+                            }
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            // Handle errors
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred: ' + errorThrown,
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $(".delete-salary").click(function() {
+            const recordId = $(this).data("header-id");
+            console.log(recordId)
+            // Show a confirmation dialog
+            Swal.fire({
+                icon: 'question',
+                title: 'Confirm Submission',
+                text: 'Are you sure you want to Delete this Salary Info?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User confirmed, send the approval request
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'HRMS:delete_salary' %}",
+                        data: {
+                            record_id: recordId,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Success: Show a success alert
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Salary Info Deleted',
+                                    text: 'The Salary Info has been Deleted successfully!',
+                                }).then((result) => {
+                                    location.reload();
+                                });
+                            } else {
+                                // Error: Show an error alert
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An error occurred: ' + response.error_message,
+                                });
+                            }
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            // Handle errors
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred: ' + errorThrown,
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    });                    
+</script>
+
+</html>
+{% endblock content %}

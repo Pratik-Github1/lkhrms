@@ -1,0 +1,248 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    
+
+
+    <form action="{% url 'HRMS:add_new_tender' %}" method="post" id="addTendersForm" class="mt-5" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card shadow" id="ClientCard">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Enter Tender Details</h3>
+                <a href="{% url 'HRMS:tenders' %}">View Tenders</a>
+            </div>
+            
+            <div class="card-body cardd">
+                
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        
+                        <label for="txtTenderName" class="form-label">Tender Name <span class="text-danger">*</span></label>
+                        <textarea name="tender_name" rows="2" cols="20" id="ContentPlaceHolder1_txtTenderName" 
+                        class="form-control" placeholder="Tender Name"></textarea>
+                    
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="ddlTender" class="form-label">Tender Type</label>
+                        <select name="tender_type" id="ContentPlaceHolder1_ddlTender"
+                            class="form-control">
+                            <option selected="selected" value="1">Off Line</option>
+                            <option value="2">ETender</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtCategory" class="form-label">Category <span class="text-danger">*</span></label>
+                            <input name="category" type="text"
+                                id="ContentPlaceHolder1_txtCategory" class="form-control" />
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+                <div class="row mb-4 mt-2">
+                    <div class="col-md-4">
+                        <label for="txtExprDate" class="form-label">Date Of Expire <span
+                            class="text-danger">*</span></label>
+                        <input name="expiry_date" type="date"
+                        id="ContentPlaceHolder1_txtExprDate" class="form-control" />
+                    </div>
+
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="txtPubDate" class="form-label">Date of Publish <span
+                            class="text-danger">*</span></label>
+                        <input name="publish_date" type="date"
+                            id="ContentPlaceHolder1_txtPubDate" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtStrength" class="form-label">Strength <span class="text-danger">*</span></label>
+                            <input name="Strength" type="text"
+                                id="ContentPlaceHolder1_txtStrength" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtContractValue" class="form-label">Contract Value <span
+                                    class="text-danger">*</span></label>
+                            <input name="ContractValue" type="text"
+                                id="ContentPlaceHolder1_txtContractValue" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtContractPeriod" class="form-label">Contract Period (In Month) <span
+                                    class="text-danger">*</span></label>
+                            <input name="ContractPeriod" type="text"
+                                id="ContentPlaceHolder1_txtContractPeriod" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtWebSite" class="form-label">Website Name <span
+                                    class="text-danger">*</span></label>
+                            <input name="WebSite" type="text"
+                                id="ContentPlaceHolder1_txtWebSite" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtPreBidMeet" class="form-label">Pri-Bid meet <span
+                                    class="text-danger">*</span></label>
+                            <input name="PreBidMeet" type="date"
+                                id="ContentPlaceHolder1_txtPreBidMeet" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtSubLastDt" class="form-label">Last Date of Submission <span
+                                    class="text-danger">*</span></label>
+                            <input name="SubLastDt" type="date"
+                                id="ContentPlaceHolder1_txtSubLastDt" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtModeSub" class="form-label">Mode Submission <span
+                                    class="text-danger">*</span></label>
+                            <input name="ModeSub" type="text"
+                                id="ContentPlaceHolder1_txtModeSub" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtTechBidOpen" class="form-label">Technical Bid Open <span
+                                    class="text-danger">*</span></label>
+                            <input name="TechBidOpen" type="date"
+                                id="ContentPlaceHolder1_txtTechBidOpen" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtFinBibOpen" class="form-label">Financial Bid Open <span
+                                    class="text-danger">*</span></label>
+                            <input name="FinBibOpen" type="date"
+                                id="ContentPlaceHolder1_txtFinBibOpen" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtPaperCost" class="form-label">Paper Cost <span
+                                    class="text-danger">*</span></label>
+                            <input name="PaperCost" type="text"
+                                id="ContentPlaceHolder1_txtPaperCost" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtEMD" class="form-label">EMD <span class="text-danger">*</span></label>
+                            <input name="EMD" type="text" id="ContentPlaceHolder1_txtEMD"
+                                class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="FileUpload1" class="form-label">Advertise Copy (In .pdf format) <span
+                                    class="text-danger">*</span></label>
+                            <input type="file" name="adv_doc"
+                                id="ContentPlaceHolder1_FileUpload1" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="ddlPUserId" class="form-label">Tender Prepare User <span
+                                    class="text-danger">*</span></label>
+                            <select name="PUserId" id="ContentPlaceHolder1_ddlPUserId"
+                                class="form-control">
+                                <option selected="selected" value="0" disabled>--Select--</option>
+                                {% for i in users %}
+                                <option value="{{ i.username }}">{{ i.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="ddlMUserId" class="form-label">Tender Monitor User <span
+                                    class="text-danger">*</span></label>
+                            <select name="MUserId" id="ContentPlaceHolder1_ddlMUserId"
+                                class="form-control">
+                                <option selected="selected" value="0" disabled>--Select--</option>
+                                {% for i in users %}
+                                <option value="{{ i.username }}">{{ i.username }}</option>
+                                {% endfor %}
+                                
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success me-md-2 mb-3 mt-4">Add</button>
+                <button type="reset" class="btn btn-danger mb-3 mt-4">Cancel</button>
+            </div>
+
+        </div>
+    </form>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        $("#addTendersForm").submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: data.message,
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function () {
+                            // You can redirect or perform any other action after success
+                        });
+                    } else {
+                        Swal.fire('Error', 'Failed to add document', 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to add document', 'error');
+                }
+            });
+        });
+    });
+</script>
+</html>
+{% endblock content %}

@@ -1,0 +1,114 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+
+
+<div class="card shadow mt-5" id="ClientCard">
+    <div class="card-header" style="display: flex; justify-content: space-between;">
+        <h3 class="card-title">Not Submitted Tenders List</h3>
+    </div>
+    <div class="card-body cardd">
+        <form method="get" class="mt-5" onsubmit="prepareDateRange()">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-5">
+                    <label for="month" class="form-label">Select a month:</label>
+                    <select name="selected_month" id="selected_month" class="form-control" onchange="prepareDateRange()">
+                        <option selected disabled>--choose--</option>
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label for="year">Select Year:</label>
+                    <select name="selected_year" id="selected_year" class="form-control" onchange="prepareDateRange()">
+                        <option selected disabled>--choose--</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+                <input type="hidden" name="selected_start_date" id="selected_start_date">
+                <input type="hidden" name="selected_end_date" id="selected_end_date">
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success" style="margin-top: 30px;">Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function prepareDateRange() {
+        var selectedMonth = document.getElementById("selected_month").value;
+        var selectedYear = document.getElementById("selected_year").value;
+
+        if (selectedMonth && selectedYear) {
+            // Convert month and year to start date and end date
+            var startDate = selectedYear + "-" + selectedMonth + "-01";
+            
+            // Get the last day of the selected month
+            var endDate = new Date(selectedYear, selectedMonth, 1).toISOString().split('T')[0];
+            
+            console.log(startDate);
+            console.log(endDate);
+            
+            // Display the values in the input fields for user visibility
+            document.getElementById("selected_start_date").value = startDate;
+            document.getElementById("selected_end_date").value = endDate;
+        }
+    }
+</script>
+
+<div class="row row-sm mt-5">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive export-table">
+                    <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom  w-100">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 10PX;">Sl No</th>
+                                <th style="font-size: 10PX;">Tender Name</th>
+                                <th style="font-size: 10PX;">Publish Date</th>
+                                <th style="font-size: 10PX;">Expire Date</th>
+                                <th style="font-size: 10PX;">Contract Value</th>
+                                <th style="font-size: 10PX;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 10PX;">
+                            {% for tender in tenders %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{tender.tendername}}</td>
+                                    <td>{{tender.publishdate}}</td>
+                                    <td>{{tender.expiredate}}</td>
+                                    <td>{{tender.contractvalue}}</td>
+                                    <td>
+                                        {% if tender.submitsts == 1 %}
+                                            <span class="text-success">SUBMITTED</span>
+                                        {% else %}
+                                            <span class="text-danger">NOT SUBMITTED</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                </tr>
+                            {% endfor %}    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

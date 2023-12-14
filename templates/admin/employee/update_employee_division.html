@@ -1,0 +1,129 @@
+<!-- employee_list.html -->
+
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add SweetAlert CDN link here -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+    <form method="post" class="mt-5">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <label for="">Search Client</label>
+                <input type="text" class="form-control" id="client_input" name="client_name"
+                    placeholder="LK00001-XXXX" value="{{ cname }}">
+                <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+            </div>
+            <div class="col-md-3 mb-2" style="margin-top: 29px;">
+                <button type="submit" class="btn  btn-primary">Search</button>
+            </div> 
+            <div class="col-md-3 mb-3">
+                <select name="division" class="form-control">
+                    <option value="" selected disabled>Select Division</option>
+                    {% for division in divisions %}
+                    <option value="{{ division.did }}">{{ division.division }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <hr>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Employee Name</th>
+                    <th>Division Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="selected_employees" value="{{ employee.empid }}">
+                    </td>
+                    <td>{{ employee.empname }}</td>
+                    <td>{{ employee.did.division }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-primary" id="update-button">Update Division</button>
+
+    </form>
+
+    <!-- employee_list.html -->
+    <script>
+        const clientNameInput = document.getElementById("client_input");
+        const clientSuggestions = document.getElementById("client_suggestions");
+                
+        clientNameInput.addEventListener("input", function () {
+            const keyword = this.value.trim();
+    
+            if (keyword) {
+                fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                    .then(response => response.json())
+                    .then(data => {
+                        const clients = data.clients;
+                        const suggestions = clients.map(client => `<div class="suggestion">${client.ccode} - ${client.cname}</div>`).join("");
+                        clientSuggestions.innerHTML = suggestions;
+    
+                        // Handle click on a suggestion
+                        const suggestionElements = document.querySelectorAll(".suggestion");
+                        suggestionElements.forEach(suggestion => {
+                            suggestion.addEventListener("click", function () {
+                                clientNameInput.value = suggestion.textContent;
+                                clientSuggestions.innerHTML = ""; // Clear suggestions
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error("An error occurred while fetching user suggestions:", error);
+                    });
+            } else {
+                clientSuggestions.innerHTML = "";
+            }
+        });                    
+        // Attach a click event listener to the "Update Division" button
+        $('#update-button').on('click', function () {
+            // Prepare the form data for submission
+            var formData = $('form').serialize();
+
+            // Submit the form via AJAX
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'HRMS:update_employee_division' %}',  // Replace with the actual URL
+                data: formData,
+                success: function (data) {
+                    // Display SweetAlert2 confirmation message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Division Updated',
+                        text: 'The division has been updated successfully.',
+                    }).then(function () {
+                        // Reload the page after the user clicks "OK"
+                        location.reload();
+                    });
+                },
+                error: function () {
+                    // Handle any errors here
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
+{% endblock content %}

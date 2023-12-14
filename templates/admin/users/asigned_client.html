@@ -1,0 +1,211 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assigned Client</title>
+
+    <!-- Js For dob -->
+    <script src="/employee/js/dob.js"></script>
+
+    <!-- SweetAlert library cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+        }
+
+        /* Add border to the container */
+        .custom-border {
+            border: 1px solid #ccc;
+            padding: 20px;
+            /* Add some padding for better appearance */
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5 fade-in custom-border">
+        <form action="">
+            <h3 class="text-center mb-4 text-primary">Assigned Client</h3>
+            <hr>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        User Id - <span id="ContentPlaceHolder1_lblUserId" style="font-weight:bold;">ABHISEK</span>
+                    </div>
+
+                    <div class="col-md-4">
+                        User Name -<span id="ContentPlaceHolder1_lblUserName" style="font-weight:bold;">ABHISEK
+                            MISHRA</span>
+                    </div>
+                    <div class="col-md-3">
+                        User Role -<span id="ContentPlaceHolder1_lblRole" style="font-weight:bold;">EntryUser</span>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="txtClient" class="form-label">Client Code <span
+                                    class="text-danger">*</span></label>
+                            <input name="ctl00$ContentPlaceHolder1$txtClient" type="text"
+                                id="ContentPlaceHolder1_txtClient" class="form-control"
+                                placeholder="Employee Code or Name" onchange="GetId();" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="ddlDistrict" class="form-label">District <span
+                                    class="text-danger">*</span></label>
+                            <select name="ctl00$ContentPlaceHolder1$ddlDistrict" id="ContentPlaceHolder1_ddlDistrict"
+                                class="form-select">
+                                <option selected disabled>--Select--</option>
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label class="form-label"></label>
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$btnViewClient" value="View"
+                                id="ContentPlaceHolder1_btnViewClient" class="btn btn-primary"
+                                style="margin-top: 30px;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label class="form-label"></label>
+                            <input type="submit" name=""
+                                value="View Assign Client" id=""
+                                class="btn btn-primary mt-2" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label class="form-label"></label>
+                            <input type="submit" name=""
+                                value="Assign Selected Client" id=""
+                                class="btn btn-success mt-2" style="margin-left: -55px;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped mt-2">
+                <thead>
+                    <tr class="text-center">
+                        <th>SL No</th>
+                        <th>User Id</th>
+                        <th>User Name</th>
+                        <th>Roll Name</th>
+                        <th>Branch Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <strong class="text-danger">Inactive</strong>
+                        </td>
+                        <td><a href="" style="text-decoration: none;" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">Edit Branch</a>&nbsp;&nbsp;&nbsp;<a href=""
+                                style="text-decoration: none;">Assign Client</a>&nbsp;&nbsp;&nbsp;<a href=""
+                                style="text-decoration: none;">Reset Password</a>&nbsp;&nbsp;&nbsp;<a href=""
+                                style="text-decoration: none;">Active</a></td>
+                    </tr>
+                    <!-- Add more rows here -->
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal For New Branch -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="exampleModalLabel">New Branch</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="" class="form-label">Branch Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-sm">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Add the "active" class to trigger the fade-in animation when the document is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container.fade-in');
+            container.classList.add('active');
+        });
+    </script>
+
+    <!-- JS for D.O.B -->
+    <!-- <script>
+        function validateDate() {
+            const dobInput = document.getElementById('dob');
+            const enteredDate = new Date(dobInput.value);
+            const currentDate = new Date();
+
+            if (enteredDate > currentDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid D.O.B',
+                    text: 'Please select a date of birth in the past.'
+                });
+                dobInput.value = '';
+            }
+        }
+    </script> -->
+
+
+</body>
+
+</html>
+{% endblock content %}

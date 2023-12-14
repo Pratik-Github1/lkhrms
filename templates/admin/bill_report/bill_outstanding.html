@@ -1,0 +1,175 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tableexport@5.2.0/dist/js/tableexport.min.js"></script>
+
+    <!-- ... (previous HTML code) ... -->
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable
+        var table = $('#exampleData').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':visible',
+                        modifier: {
+                            selected: null
+                        }
+                    },
+                    footer: true // Include footer (tfoot) in the Excel export
+                }
+            ],
+            drawCallback: function (settings) {
+                var api = this.api();
+                updateTotals(api);
+                calculateOutstandings(api);
+            }
+        });
+
+                // Calculate and update the totals
+        function updateTotals(api) {
+            var total_str = 0;
+            var total_bill_amount = 0;
+            var total_receive_amount = 0;
+            var total_tds = 0;
+            var total_gst = 0;
+            var total_receive = 0;
+            var total_outstandings = 0; // Add a variable for the total outstandings
+
+            api.rows({ search: 'applied' }).every(function () {
+                var rowData = this.data();
+                total_str += parseFloat(rowData[6]) || 0;
+                total_bill_amount += parseFloat(rowData[7]) || 0;
+                total_receive_amount += parseFloat(rowData[8]) || 0;
+                total_tds += parseFloat(rowData[9]) || 0;
+                total_gst += parseFloat(rowData[10]) || 0;
+                total_receive += parseFloat(rowData[11]) || 0;
+
+                // Calculate outstandings for each row and add to the total_outstandings
+                var billAmount = parseFloat(rowData[7]) || 0;
+                var totalReceive = parseFloat(rowData[11]) || 0;
+                var outstandings = billAmount - totalReceive;
+                total_outstandings += outstandings;
+            });
+
+            $('#total_str').text(total_str.toFixed(2));
+            $('#total_bill_amount').text(total_bill_amount.toFixed(2));
+            $('#total_receive_amount').text(total_receive_amount.toFixed(2));
+            $('#total_tds').text(total_tds.toFixed(2));
+            $('#total_gst').text(total_gst.toFixed(2));
+            $('#total_receive').text(total_receive.toFixed(2));
+
+            // Update the footer cell for "OUTSTANDINGS AMOUNT" with the total_outstandings
+            $('#total_outstandingsValue').text(total_outstandings.toFixed(2));
+        }
+
+
+        // Calculate Outstandings
+        function calculateOutstandings(api) {
+            api.rows({ search: 'applied' }).every(function () {
+                var rowData = this.data();
+                var billAmount = parseFloat(rowData[7]) || 0;
+                var totalReceive = parseFloat(rowData[11]) || 0;
+                var outstandings = billAmount - totalReceive;
+                $(this.node()).find('.total_outstandings').text(outstandings.toFixed(2));
+            });
+        }
+
+        // Initial totals calculation
+        updateTotals(table);
+        calculateOutstandings(table);
+    });
+</script>
+
+<!-- ... (remaining HTML code) ... -->
+
+</head>
+<body>
+   
+    <div class="card shadow cardd">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6>Expenditure Reports Details</h6>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="exampleData" class="table table-striped table-bordered" style="font-size: small;">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>CLIENT NAME</th>
+                            <th>DIVISION</th>
+                            <th>DISTRICT</th>
+                            <th>BILL NO</th>
+                            <th>BILL DATE</th>
+                            <th>STR</th>
+                            <th>BILL<br>Amount</th>
+                            <th>RECEIVE<br>Amount</th>
+                            <th>TDS</th>
+                            <th>GST</th>
+                            <th>TOTAL<br>RECEIVE</th>
+                            <th>OUTSTANDINGS<br>AMOUNT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in bill_outstandings %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ bill.did.cid.cname }}</td>
+                                <td>{{ bill.did.division }}</td>
+                                <td>{{ bill.did.cid.district }}</td>
+                                <td>{{ bill.bid.billno }}</td>
+                                <td>{{ bill.bid.billdate|date:"M Y" }}</td>
+                                <td>{{ bill.bid.strength }}</td>
+                                <td>{{ bill.bid.billamount }}</td>
+                                <td>{{ bill.recvamount }}</td>
+                                <td>{{ bill.tds }}</td>
+                                <td>{{ bill.gst }}</td>
+                                <td>{{ bill.total }}</td>
+                                <td class="total_outstandings">0</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr style="font-size: 10px;">
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Total</th>
+                            <th id="total_str">0</th>
+                            <th id="total_bill_amount">0</th>
+                            <th id="total_receive_amount">0</th>
+                            <th id="total_tds">0</th>
+                            <th id="total_gst">0</th>
+                            <th id="total_receive">0</th>
+                            <th id="total_outstandingsValue">0</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+</html>
+{% endblock content %}

@@ -1,0 +1,599 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                Search Employee Details
+            </div>
+            <div class="card-body mt-2 mb-3">
+                <form method="post" action={% url 'HRMS:edit_employee' %}>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-3 mt-2">
+                            Search Employee :
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" placeholder="Enter Employee code or Name" id="search_query" name="search_query" required class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% if employee %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <!-- Client Details -->
+            <h3 class="text-center mb-4 text-primary">Employee Details</h3>
+            <hr>
+            <div class="row mb-4">
+                
+                <div class="col-md-3 mb-3">
+                    <label for="employee_name" class="form-label text-dark">Employee Name<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="employee_name" name="employee_name" aria-describedby=""
+                        title="Please enter a valid Employee name. Only letters and spaces are allowed."  value="{{ employee.empname }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="employee_father_husband" class="form-label text-dark">Father/Husband Name<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="employee_father_husband" name="employee_father_husband"
+                        aria-describedby=""
+                        title="Please enter a valid Father/Husband name. Only letters and spaces are allowed." value="{{ employee.empfhname }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="date_of_birth" class="form-label text-dark">Date of birth<span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" aria-describedby=""
+                           value="{% if employee.empdob %}{{ employee.empdob|date:"Y-m-d" }}{% endif %}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="qualification" class="form-label text-dark">Qualification<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="qualification" name="qualification" rows="1">{{ employee.qualification }}</textarea>
+                </div>
+                
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="mobile_no" class="form-label text-dark">Mobile No.<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="mobile_no" name="mobile_no"
+                        aria-describedby="clientCodeHelp" value="{{ employee.mobileno }}"
+                        >
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="emergency_number" class="form-label text-dark">Emergency No.<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="emergency_number" name="emergency_number" value="{{ employee.emergencyno }}"
+                        aria-describedby="clientCodeHelp" 
+                        >
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="blood_group" class="form-label text-dark">Blood Group<span class="text-danger">*</span></label>
+                    <select class="form-select" id="blood_group" name="blood_group">
+                        <option disabled>Select Blood Group</option>
+                        <option value="A+" {% if employee.bloodgroup == 'A+' %}selected{% endif %}>A+</option>
+                        <option value="A-" {% if employee.bloodgroup == 'A-' %}selected{% endif %}>A-</option>
+                        <option value="B+" {% if employee.bloodgroup == 'B+' %}selected{% endif %}>B+</option>
+                        <option value="B-" {% if employee.bloodgroup == 'B-' %}selected{% endif %}>B-</option>
+                        <option value="AB+" {% if employee.bloodgroup == 'AB+' %}selected{% endif %}>AB+</option>
+                        <option value="AB-" {% if employee.bloodgroup == 'AB-' %}selected{% endif %}>AB-</option>
+                        <option value="O+" {% if employee.bloodgroup == 'O+' %}selected{% endif %}>O+</option>
+                        <option value="O-" {% if employee.bloodgroup == 'O-' %}selected{% endif %}>O-</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="date_of_joining" class="form-label text-dark">Date Of Joining<span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="date_of_joining" name="date_of_joining"
+                        aria-describedby="" required value="{% if employee.joinningdate %}{{ employee.joinningdate|date:"Y-m-d" }}{% endif %}">
+                </div>
+                
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="department" class="form-label text-dark">Department<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="department" name="department"
+                        aria-describedby="clientCodeHelp" required value="{{ employee.department }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="designation" class="form-label text-dark">Designation<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="designation" name="designation"
+                        aria-describedby="" value="{{ employee.desgination }}" >
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="gender" class="form-label text-dark">Gender<span class="text-danger">*</span></label>
+                    <select class="form-select" id="gender" name="gender">
+                        <option disabled>Select Gender</option>
+                        <option value="Male" {% if employee.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if employee.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if employee.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>                
+            </div>
+
+
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <label for="client_input" class="form-label text-dark">Client Name<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="client_input" name="client_name" aria-describedby=""
+                        
+                        placeholder="Enter Client name..." value="{{employee.cid.cname}}">
+                    <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="client_input" class="form-label text-dark">Division Name<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="client_input" name="client_name" aria-describedby=""
+                        
+                        placeholder="Enter Client name..." value="{{employee.did.division}}">
+                    <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                </div>
+                
+                {% comment %} <script>
+                    const clientNameInput = document.getElementById("client_input");
+                    const clientSuggestions = document.getElementById("client_suggestions");
+                    const divisionSelect = document.getElementById("division_select");
+
+                    clientNameInput.addEventListener("input", function () {
+                        const keyword = this.value.trim();
+
+                        if (keyword) {
+                            fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const clients = data.clients;
+                                    const suggestions = clients.map(client_name => `<div class="suggestion">${client_name}</div>`).join("");
+                                    clientSuggestions.innerHTML = suggestions;
+
+                                    // Handle click on a suggestion
+                                    const suggestionElements = document.querySelectorAll(".suggestion");
+                                    suggestionElements.forEach(suggestion => {
+                                        suggestion.addEventListener("click", function () {
+                                            clientNameInput.value = suggestion.textContent;
+                                            clientSuggestions.innerHTML = ""; // Clear suggestions
+
+                                            // Fetch divisions for the selected client and populate the select
+                                            fetch("{% url 'HRMS:get_divisions' %}?client_name=" + suggestion.textContent)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    const divisions = data.divisions;
+                                                    divisionSelect.innerHTML = ""; // Clear existing options
+                                                    divisionSelect.appendChild(new Option("Select Division", "")); // Add default option
+                                                    divisions.forEach(division => {
+                                                        divisionSelect.appendChild(new Option(division, division));
+                                                    });
+                                                })
+                                                .catch(error => {
+                                                    console.error("An error occurred while fetching divisions:", error);
+                                                });
+                                        });
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error("An error occurred while fetching user suggestions:", error);
+                                });
+                        } else {
+                            clientSuggestions.innerHTML = "";
+                        }
+                    });
+                </script> {% endcomment %}
+                <div class="col-md-3 mb-3">
+                    <label for="presentAddress" class="form-label text-dark">Present Address<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="presentAddress" name="present_address" rows="3" required>{{ employee.preaddress }}</textarea>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="cityPresent" class="form-label text-dark">City<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="cityPresent" name="present_city" aria-describedby="" title="Please enter a valid City. Only letters and spaces are allowed." required value="{{ employee.precity }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="districtPresent" class="form-label text-dark">District<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="districtPresent" name="present_district" aria-describedby="" title="Please enter a valid district. Only letters and spaces are allowed." required value="{{ employee.predist }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="statePresent" class="form-label text-dark">State<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="statePresent" name="present_state" aria-describedby="" title="Please enter a valid state. Only letters and spaces are allowed." required value="{{ employee.prestate }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="pinCodePresent" class="form-label text-dark">PIN Code<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="pinCodePresent" name="present_pincode" value="{{ employee.perpin }}">
+                </div>
+                
+
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input bg-primary" id="sameAddress" name="same_address">
+                <label class="form-check-label" for="sameAddress">Same as Present Address</label>
+            </div><br>
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="permanentAddress" class="form-label text-dark">Permanent Address<span
+                            class="text-danger">*</span></label>
+                    <textarea class="form-control" id="permanentAddress" name="permanent_address" rows="3"
+                        required>{{employee.peraddress}}</textarea>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="cityPermanent" class="form-label text-dark">City<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="cityPermanent" name="permanent_city" aria-describedby=""
+                        value="{{ employee.percity }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="districtPermanent" class="form-label text-dark">District<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="districtPermanent" name="permanent_district"
+                        aria-describedby="" 
+                        value="{{ employee.perdist }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="statePermanent" class="form-label text-dark">State<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="statePermanent" name="permanent_state"
+                        aria-describedby="" title="Please enter a valid state. Only letters and spaces are allowed."
+                        value="{{ employee.perstate }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="pinCodePermanent" class="form-label text-dark">PIN Code<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="pinCodePermanent" name="permanent_pincode"
+                        aria-describedby="" title="Please enter a valid 6-digit PIN code consisting of numbers."
+                        value="{{ employee.perpin }}">
+                </div>
+
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="adhara_no" class="form-label text-dark">Aadhar No.<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="adhara_no" name="adhara_no" aria-describedby="" required value="{{ employee.aadharno }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="uan_no" class="form-label text-dark">UAN No.<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="uan_no" name="uan_no" aria-describedby=""  value="{{ employee.unno }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="epf_no" class="form-label text-dark">EPF No.<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="epf_no" name="epf_no" aria-describedby=""  value="{{ employee.epfno }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="esi_no" class="form-label text-dark">ESI No.<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="esi_no" name="esi_no" aria-describedby=""  value="{{ employee.esino }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="bank_name" class="form-label text-dark">Bank Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="bank_name" name="bank_name" aria-describedby=""  value="{{ employee.bankname }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="account_no" class="form-label text-dark">Bank Account Number<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="account_no" name="account_no" aria-describedby=""  value="{{ employee.accountno }}">
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label for="isfc" class="form-label text-dark">IFSC code<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="isfc" name="ifsc" aria-describedby=""  value="{{ employee.ifsccode }}">
+                </div>
+                
+
+            </div>
+
+            <div class="container p-3 custom-border w-100">
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <label for="basic" class="form-label text-dark">Basic<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="basic" name="basic" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.basic }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="hra" class="form-label text-dark">HRA<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="hra" name="hra" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.hra }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="others" class="form-label text-dark">Others<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="others" name="others" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.others }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="conv" class="form-label text-dark">Conv.<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="conv" name="conv" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.conv }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="maxepf" class="form-label text-dark">MAX EPF Wages<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="maxepf" name="maxepf" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.maxepf }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="maxesi" class="form-label text-dark">MAX ESI Wages<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="maxesi" name="maxesi" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.maxesi }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="lta" class="form-label text-dark">LTA<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="lta" name="lta" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.lta }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="medical" class="form-label text-dark">Medical<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="medical" name="medical" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.medical }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="resallow" class="form-label text-dark">Rest. Allow<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="resallow" name="resallow" aria-describedby="" pattern="[0-9]*"
+                            required value="{{ employee.resallow }}">
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Gross salary<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" aria-describedby="" disabled required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Net pay<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" aria-describedby="" disabled required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">CTC<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" aria-describedby="" disabled required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Employee PDF<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" aria-describedby="" disabled required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Employee ESI<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" aria-describedby="" disabled required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Employer EPF<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" aria-describedby="" disabled required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Employer ESI<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" aria-describedby="" disabled required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Status<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="status" id="activeRadio" value="Active"
+                                {% if employee.activests == 1 %}checked{% endif %}>
+                            <label class="form-check-label" for="activeRadio">Active</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="status" id="inactiveRadio" value="Inactive"
+                                {% if employee.activests == 0 %}checked{% endif %}>
+                            <label class="form-check-label" for="inactiveRadio">Inactive</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <label for="wagestype" class="form-label text-dark">Wages Type<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="wagestype" id="dailyRadio" value="Daily"
+                                {% if employee.wagestype == "Daily" %}checked{% endif %}>
+                            <label class="form-check-label" for="dailyRadio">Daily</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="wagestype" id="monthlyRadio" value="Monthly"
+                                {% if employee.wagestype == "Monthly" %}checked{% endif %}>
+                            <label class="form-check-label" for="monthlyRadio">Monthly</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <label for="billtype" class="form-label text-dark">Billable Type<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="billtype" id="nonBillableRadio" value="Non billable"
+                                {% if employee.billtype == "Non billable" %}checked{% endif %}>
+                            <label class="form-check-label" for="nonBillableRadio">Non billable</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="billtype" id="billableRadio" value="Billable"
+                                {% if employee.billtype == "Billable" %}checked{% endif %}>
+                            <label class="form-check-label" for="billableRadio">Billable</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Bonus<span
+                                class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Leave encash<span
+                                class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">EPF<span
+                                class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">ESI<span
+                                class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">EPF Pension<span
+                                class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">TDS<span
+                                class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Bonus<span
+                                class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Leave encash<span
+                                class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="x" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="" id="x" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="clientcode" class="form-label text-dark">HR Deduction Per Day<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" aria-describedby="" pattern="[0-9]*"
+                            title="Please enter a valid Medical using only numbers." required>
+                    </div>
+                </div>
+            </div><br>
+
+            <!-- <button class="btn btn-primary me-md-2" type="button">Button</button> -->
+            <button type="submit" class="btn btn-success me-md-2" onclick="validateDate()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-send"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+                </svg>
+                Save
+            </button>
+            <button type="button" class="btn btn-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-x"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+                Cancel
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <script>
+        // Get the present and permanent address elements
+        const presentAddressInput = document.getElementById("presentAddress");
+        const permanentAddressInput = document.getElementById("permanentAddress");
+        const sameAddressCheckbox = document.getElementById("sameAddress");
+
+        // Add an event listener to the checkbox
+        sameAddressCheckbox.addEventListener("change", function () {
+            // If the checkbox is checked, copy the present address fields to permanent address
+            if (this.checked) {
+                document.getElementById("permanentAddress").value = document.getElementById("presentAddress").value;
+                document.getElementById("cityPermanent").value = document.getElementById("cityPresent").value;
+                document.getElementById("districtPermanent").value = document.getElementById("districtPresent").value;
+                document.getElementById("statePermanent").value = document.getElementById("statePresent").value;
+                document.getElementById("pinCodePermanent").value = document.getElementById("pinCodePresent").value;
+            } else {
+                // If unchecked, clear the permanent address fields
+                document.getElementById("permanentAddress").value = "";
+                document.getElementById("cityPermanent").value = "";
+                document.getElementById("districtPermanent").value = "";
+                document.getElementById("statePermanent").value = "";
+                document.getElementById("pinCodePermanent").value = "";
+            }
+        });
+    </script>
+</body>
+
+</html>
+{% endblock content %}

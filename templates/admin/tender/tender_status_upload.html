@@ -1,0 +1,139 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+
+
+<div class="row row-sm mt-5">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Upload Status</h3>
+                <a href="{% url 'HRMS:add_new_tender' %}">Add New Tender</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable">
+                        <thead style="background-color: antiquewhite;">
+                            <tr style="background-color: antiquewhite;">
+                                <th style="font-size: 10PX;">Sl No</th>
+                                <th style="font-size: 10PX;">Tender Name</th>
+                                <th style="font-size: 10PX;">Publish Date</th>
+                                <th style="font-size: 10PX;">Expire Date</th>
+                                <th style="font-size: 10PX;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 10PX;">
+                            {% for tender in tenders %}
+
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td class="truncate-text" data-max-chars="30">{{tender.tendername}}</td>
+                                <td>{{ tender.publishdate|date:"j-F-Y" }}</td>
+                                <td>{{ tender.expiredate|date:"j-F-Y" }}</td>
+                                <td>
+                                    <a class="modal-effect d-grid mb-3" data-bs-effect="effect-fall"
+                                        data-bs-toggle="modal" href="#modaldemo8"
+                                        onclick="updateModal({{ tender.tid }})">Upload Status</a>
+
+                                        View
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modaldemo8">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content modal-content-demo">
+            <div class="modal-header">
+                <h6 class="modal-title">Upload Status Details</h6>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'HRMS:add_status_details' %}" method="post" id="finbidForm"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="">Tender Status Remark</label>
+                            <textarea name="statusremark" class="form-control" cols="30" rows="10"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="">Tender</label>
+                            <select name="statustype" class="form-control">
+                                <option value="1">Open</option>
+                                <option value="2">Closed</option>
+                            </select>
+
+                            <label for="" class="mt-5">Upload Status Document</label>
+                            <input type="file" name="docpath" class="form-control mt-1">
+                        </div>
+                    </div>
+                    <input type="text" name="tender_id" id="tenderIdInput">
+                    <div class="row text-end">
+                        <div class="col-md-12">
+                            <button class="btn btn-success ml-auto" type="submit">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function updateModal(tenderId) {
+        console.log(tenderId);
+        // Set the tender ID in the hidden input field
+        document.getElementById('tenderIdInput').setAttribute('value', tenderId);
+        // Optional: Clear the form when the modal is opened
+        document.getElementById('finbidForm').reset();
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#finbidForm").submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: data.message,
+                            icon: 'success',
+                            showConfirmButton: true, // Show the OK button
+                        }).then(function () {
+                            location.reload(); // Reload the page after clicking OK
+                        });
+                    } else {
+                        Swal.fire('Error', 'Failed to add document', 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to add document', 'error');
+                }
+            });
+        });
+    });
+</script>
+
+
+
+{% endblock content %}

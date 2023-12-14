@@ -1,0 +1,102 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <form action="{% url 'HRMS:add_new_document' %}" method="post" id="addDocumentsForm" class="mt-5" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card shadow" id="ClientCard">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Enter Document Details</h3>
+                <a href="{% url 'HRMS:company_essential_documents' %}">View Documents</a>
+            </div>
+
+            
+            <div class="card-body cardd">
+                
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <label for="txtDocumentName" class="form-label">Document Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="txtDocumentName" name="document_name" placeholder="Document Name" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="txtRegDate" class="form-label">Registration Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="txtRegDate" name="registration_date" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="txtExprDate" class="form-label">Expired Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="txtExprDate" name="expired_date" required>
+                    </div>
+                </div>
+
+                <div class="row mb-4 mt-2">
+                    <div class="col-md-4">
+                        <label for="FileUpload1" class="form-label">Upload UnSign Copy (In .pdf format) <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="FileUpload1" name="unsign_file" required>
+                        <input type="hidden" id="hdnFileName">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="FileUpload2" class="form-label">Upload Sign Copy (In .pdf format) <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="FileUpload2" name="sign_file" required>
+                    </div>
+
+                    
+                </div>
+                    <button type="submit" class="btn btn-success me-md-2 mb-3 mt-4">Add</button>
+                    <button type="reset" class="btn btn-danger mb-3 mt-4">Cancel</button>
+                
+
+                
+            </div>
+
+        </div>
+    </form>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#addDocumentsForm").submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: data.message,
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function () {
+                            // You can redirect or perform any other action after success
+                        });
+                    } else {
+                        Swal.fire('Error', 'Failed to add document', 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to add document', 'error');
+                }
+            });
+        });
+    });
+</script>
+
+</html>
+{% endblock content %}

@@ -1,0 +1,176 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Bill Receive Details</title>
+</head>
+<style>
+</style>
+
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="text-primary">Add Bill Receive Details</h3>
+            </div>
+            <div class="col-md-6">
+                <a href="{% url 'HRMS:bill_receive' %}" class="btn btn-md btn-primary float-end">View Bill Receive</a>
+            </div>
+        </div>
+        <hr>
+        <form id="billForm">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="clientName" class="form-label">Client Name</label>
+                        <input type="text" class="form-control" id="clientName" name="clientName" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="receiveAmount" class="form-label">Receive Amount</label>
+                        <input type="number" class="form-control" id="receiveAmount" name="receiveAmount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gst" class="form-label">GST</label>
+                        <input type="number" class="form-control" id="gst" name="gst" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="gstTDS" class="form-label">GST TDS</label>
+                        <input type="number" class="form-control" id="gstTDS" name="gstTDS" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="bankName" class="form-label">Bank Name</label>
+                        <input type="text" class="form-control" id="bankName" name="bankName" >
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="division" class="form-label">Division</label>
+                        <select class="form-select" id="division" name="division" >
+                            <option value="" disabled selected>Select Division</option>
+                            <!-- Add division options here -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="penalty" class="form-label">Penalty</label>
+                        <input type="text" class="form-control" id="penalty" name="penalty" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="tds" class="form-label">TDS</label>
+                        <input type="number" class="form-control" id="tds" name="tds" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="othersAmount" class="form-label">Others Amount</label>
+                        <input type="number" class="form-control" id="othersAmount" name="othersAmount" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="billNo" class="form-label">Bill No</label>
+                        <input type="text" class="form-control" id="billNo" name="billNo" >
+                    </div>
+                </div>
+                <div class="col-md-3">
+
+                    <div class="mb-3">
+                        <label for="strength" class="form-label">Strength</label>
+                        <input type="text" class="form-control" id="strength" name="strength" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="referenceNumber" class="form-label">Reference Number</label>
+                        <input type="number" class="form-control" id="referenceNumber" name="referenceNumber" >
+                    </div>
+                   
+                    <div class="mb-3">
+                        <label for="billAmount" class="form-label">Bill Amount</label>
+                        <input type="number" class="form-control" id="billAmount" name="billAmount" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="receiveAmountWithoutGST" class="form-label">Receive Amount (Without GST)</label>
+                        <input type="date" class="form-control" id="receiveAmountWithoutGST" name="receiveAmountWithoutGST" >
+                    </div>
+                </div>
+                <div class="col-md-3">
+
+                    <div class="mb-3">
+                        <label for="outstanding" class="form-label">Outstanding</label>
+                        <input type="number" class="form-control" id="outstanding" name="outstanding" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="others" class="form-label">Others</label>
+                        <input type="text" class="form-control" id="others" name="others" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="receiveDate" class="form-label">Receive Date</label>
+                        <input type="date" class="form-control" id="receiveDate" name="receiveDate" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="chequeNo" class="form-label">Cheque No</label>
+                        <input type="number" class="form-control" id="chequeNo" name="chequeNo" >
+                    </div>
+
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="materialExpenditure" class="form-label">Material Expenditure</label>
+                        <input type="text" class="form-control" id="materialExpenditure" name="materialExpenditure" >
+                    </div> 
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="fuelExpenditure" class="form-label">Fuel Expenditure</label>
+                        <input type="text" class="form-control" id="fuelExpenditure" name="fuelExpenditure" >
+                    </div> 
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="operationalExpenditure" class="form-label">Operational Expenditure</label>
+                        <input type="text" class="form-control" id="operationalExpenditure" name="operationalExpenditure" >
+                    </div> 
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="othersExpenditure" class="form-label">Others Expenditure</label>
+                        <input type="text" class="form-control" id="othersExpenditure" name="othersExpenditure" >
+                    </div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-success me-md-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-send"
+                            viewBox="0 0 16 16">
+                            <path
+                                d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+                        </svg>
+                        Save
+                    </button>
+                    <button type="button" class="btn btn-danger" id="cancelButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-x"
+                            viewBox="0 0 16 16">
+                            <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                        </svg>
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('cancelButton').addEventListener('click', function () {
+            // Reset the form fields when the "Cancel" button is clicked
+            document.getElementById('billForm').reset();
+        });
+    </script>
+</body>
+
+</html>
+{% endblock content %}

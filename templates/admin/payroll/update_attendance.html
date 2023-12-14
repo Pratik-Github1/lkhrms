@@ -1,0 +1,118 @@
+
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+    
+    .input-small {
+        width: 50px; /* Decreased width for smaller input fields */
+        padding: 2px; /* Decreased padding for smaller input fields */
+    }
+</style>
+
+<body>
+    <div class="card shadow" id="CardTable1">
+        <div class="card-header p-3">
+            <strong>
+                Attendance Details for <br> Client NAME : {{ header_record.cid.cname }} <br> Division Name : {{ header_record.did.division }} <br> Month Year : {{ header_record.atnyearmonth }}
+            </strong>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example2" class="table table-striped table-bordered" style="font-size: small;">
+                    <thead>
+                        <tr>
+                            <th>Employee Code</th>
+                            <th>Employee Name</th>
+                            <th>Present</th>
+                            <th>Woff</th>
+                            <th>Holiday</th>
+                            <th>CL</th>
+                            <th>EL</th>
+                            <th>ML</th>
+                            <th>LP Days</th>
+                            <th>Total Days</th>
+                            <th>Pay Days</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in attendance_details %}
+                        <tr>
+                            <td>{{ detail.empid.empcode }}</td>
+                            <td>{{ detail.empid.empname }}</td>
+                            <td><input type="number" class="present input-small" value="{{ detail.present|floatformat:"0" }}"></td>
+                            <td><input type="number" class="woff input-small" value="{{ detail.woff|floatformat:"0" }}"></td>
+                            <td><input type="number" class="hday input-small" value="{{ detail.hday|floatformat:"0" }}"></td>
+                            <td><input type="number" class="cl input-small" value="{{ detail.cl|floatformat:"0" }}"></td>
+                            <td><input type="number" class="el input-small" value="{{ detail.el|floatformat:"0" }}"></td>
+                            <td><input type="number" class="ml input-small" value="{{ detail.ml|floatformat:"0" }}"></td>
+                            <td><input type="number" class="lpdays input-small" value="{{ detail.lpdays|floatformat:"0" }}" disabled></td>
+                            <td class="total-days">{{ detail.totaldays }}</td>
+                            <td class="pay-days">{{ detail.tsalarydays|floatformat:"0" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr style="font-size: 10px;">
+                            <th></th>
+                            <th></th>
+                            <th>Total</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th class="total-days" id="TotalPayDays">0</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to update total and pay days
+            function updateTotalAndPayDays() {
+                let totalDays = 0;
+                $('tbody tr').each(function() {
+                    const present = parseFloat($(this).find('.present').val()) || 0;
+                    const woff = parseFloat($(this).find('.woff').val()) || 0;
+                    const hday = parseFloat($(this).find('.hday').val()) || 0;
+                    const cl = parseFloat($(this).find('.cl').val()) || 0;
+                    const el = parseFloat($(this).find('.el').val()) || 0;
+                    const ml = parseFloat($(this).find('.ml').val()) || 0;
+                    const lpdays = parseFloat($(this).find('.lpdays').val()) || 0;
+    
+                    const total = present + woff + hday + cl + el + ml;
+                    
+                    totalDays += total;
+                    
+                    // Update the pay-days column with the same value as total-days
+                    $(this).find('.pay-days').text(total.toFixed(0));
+                });
+    
+                // Update the table footer
+                $('.total-days').text(totalDays.toFixed(0));
+                $('#TotalPayDays').text(totalDays.toFixed(0));
+            }
+    
+            // Call the update function initially
+            updateTotalAndPayDays();
+    
+            // Bind input change event to update function
+            $('input').on('input', updateTotalAndPayDays);
+        });
+    </script>
+    
+</body>
+</html>
+{% endblock content %}

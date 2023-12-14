@@ -1,0 +1,221 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Access</title>
+
+</head>
+
+<body>
+    <div class="container mt-5 fade-in custom-border">
+        <form action="">
+            <h3 class="text-center mb-4 text-primary">Menu Access</h3>
+            <hr>
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 class="text-primary">User Role</h4>
+                    <button class="btn btn-primary mt-2" type="button" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal" style="cursor:pointer">Add New Role</button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Admin
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    HR Executive
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Asst. Manager HR
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Manager HR
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Finance MIS
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Operation MIS
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Tender MIS
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    New Joining
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    EPF and ESIC MIS
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    GM Admin
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    HR and Admin
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Approveuser
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Bill and Rec.
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Gust user
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Entry user
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    EPF Process
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Tender Prepare
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Tender Monitor
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Controll User
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input bg-primary" type="radio" name="" id="">
+                                <label class="form-check-label" for="">
+                                    Approval EPF
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-check mt-2">
+                        <input class="form-check-input bg-primary" type="checkbox" name="" id="">
+                        <label class="form-check-label" for="">
+                            <strong>Menu Name</strong>
+                        </label>
+                    </div>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input bg-primary" type="checkbox" name="" id="">
+                        <label class="form-check-label" for="">
+                            <strong>Dashoard</strong>
+                        </label>
+                    </div>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input bg-primary" type="checkbox" name="" id="">
+                        <label class="form-check-label" for="">
+                            <strong>Master</strong>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- <button class="btn btn-primary me-md-2" type="button">Button</button> -->
+            <!-- <button type="submit" class="btn btn-success me-md-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-send"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+                </svg>
+                Save
+            </button>
+            <button type="button" class="btn btn-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-x"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+                Cancel
+            </button> -->
+        </form>
+    </div>
+
+    <!-- Modal For New Role -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="exampleModalLabel">Use Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="" class="form-label">User Role<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-sm">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Add the "active" class to trigger the fade-in animation when the document is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container.fade-in');
+            container.classList.add('active');
+        });
+    </script>
+
+</body>
+
+</html>
+{% endblock content %}

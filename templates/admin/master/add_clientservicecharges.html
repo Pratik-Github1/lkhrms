@@ -1,0 +1,220 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add ClientServiceChange</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+</head>
+<style>
+    .container {
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+
+<body>
+    <form action="" method="post" id="addClientServicecharge" class="mt-5">
+        {% csrf_token %}
+        <div class="card shadow" id="ClientCard">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Division Details</h3>
+                <a href="{% url 'HRMS:division_lists' %}">View Divisions</a>
+            </div>
+
+            
+            <div class="card-body cardd">
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <label for="client_input" class="form-label text-dark">Client Name<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="client_input" name="client_name" aria-describedby=""
+                            placeholder="Enter Client name..." required>
+                        <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                    </div>
+                    <script>
+                        const clientNameInput = document.getElementById("client_input");
+                        const clientSuggestions = document.getElementById("client_suggestions");
+                    
+                        clientNameInput.addEventListener("input", function () {
+                            const keyword = this.value.trim();
+                    
+                            if (keyword) {
+                                fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        const clients = data.clients;
+                                        const suggestions = clients.map(client => `<div class="suggestion">${client.ccode} - ${client.cname}</div>`).join("");
+                                        clientSuggestions.innerHTML = suggestions;
+                    
+                                        // Handle click on a suggestion
+                                        const suggestionElements = document.querySelectorAll(".suggestion");
+                                        suggestionElements.forEach(suggestion => {
+                                            suggestion.addEventListener("click", function () {
+                                                clientNameInput.value = suggestion.textContent;
+                                                clientSuggestions.innerHTML = ""; // Clear suggestions
+                                            });
+                                        });
+                                    })
+                                    .catch(error => {
+                                        console.error("An error occurred while fetching user suggestions:", error);
+                                    });
+                            } else {
+                                clientSuggestions.innerHTML = "";
+                            }
+                        });
+                    </script>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Employee EPF(%)<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="employee_epf" name="employee_epf">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Employer EPF(%)<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="employer_epf" name="employer_epf">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Max EPF Wages<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="max_epf_wages" name="max_epf_wages">
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Employee ESI(%)<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="employee_esi" name="employee_esi" >
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Employer ESI(%)<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="employer_esi" name="employer_esi" >
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Max ESI Wages<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="max_esi_wages" name="max_esi_wages">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success me-md-2 mb-3">Save</button>
+                <button type="reset" class="btn btn-danger mb-3">Cancel</button>
+            </div>
+
+        </div>
+    </form>
+</body>
+
+<script>
+    $(document).ready(function() {
+        $('#client_input').on('blur', function() {
+            var clientName = $(this).val();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'HRMS:get_client_details' %}",
+                data: {
+                    'client_name': clientName,
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(data) {
+                    // Update the input fields with the retrieved data
+                    $('#employee_epf').val(data.employee_epf);
+                    $('#employer_epf').val(data.employer_epf);
+                    $('#max_epf_wages').val(data.max_epf_wages);
+                    $('#employee_esi').val(data.employee_esi);
+                    $('#employer_esi').val(data.employer_esi);
+                    $('#max_esi_wages').val(data.max_esi_wages);
+                }
+            });
+        });
+    });
+</script>
+<script>
+        const clientNameInput = document.getElementById("client_input");
+        const clientSuggestions = document.getElementById("client_suggestions");
+
+        clientNameInput.addEventListener("input", function () {
+            const keyword = this.value.trim();
+
+            if (keyword) {
+                fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                    .then(response => response.json())
+                    .then(data => {
+                        const clients = data.clients.slice(0, 10); // Get the first 10 clients
+                        const suggestions = clients.map(client_name => `<div class="suggestion">${client_name}</div>`).join("");
+                        clientSuggestions.innerHTML = suggestions;
+
+                        // Handle click on a suggestion
+                        const suggestionElements = document.querySelectorAll(".suggestion");
+                        suggestionElements.forEach(suggestion => {
+                            suggestion.addEventListener("click", function () {
+                                clientNameInput.value = suggestion.textContent;
+                                clientSuggestions.innerHTML = ""; // Clear suggestions
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error("An error occurred while fetching user suggestions:", error);
+                    });
+            } else {
+                clientSuggestions.innerHTML = "";
+            }
+        });
+</script>
+
+<script>
+    $(document).ready(function() {
+        
+        $("#addClientServicecharge").submit(function(event) {
+            event.preventDefault(); 
+            
+            
+            var formData = $(this).serialize() + '&csrfmiddlewaretoken=' + $('input[name=csrfmiddlewaretoken]').val();
+            var endpointUrl = "{% url 'HRMS:add_servicecharge' %}";
+    
+            
+            $.ajax({
+                type: "POST",
+                url: endpointUrl,
+                data: formData,
+                success: function(response) {
+                    
+                    if (response.success) {
+                        
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(function() {
+                            
+                            location.reload();
+                        });                            
+                    } else {
+                        
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function() {
+                    
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed due to a server error. Please try again later.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    });        
+</script>
+</html>
+{% endblock content %}

@@ -1,0 +1,703 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="container custom-border">
+        <form method="post" action="{% url 'HRMS:add_employee' %}" id="employeeForm">
+            {% csrf_token %}
+            <div class="card mt-5 shadow-sm">
+                <div class="card-header" style="display: flex; justify-content: space-between;">
+                    <h3 class="card-title">Enter Employee Details</h3>
+                    <a href="{% url 'HRMS:employee_list' %}">View Employee Lists</a>
+                </div>
+                
+                <div class="card-body pb-2">
+
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Employee Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="empname" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Father/Husband Name<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="empfhname" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Date of birth<span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="dob" name="empdob" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Qualification<span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="" rows="3" name="qualification" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Mobile No.<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="mobileno" aria-describedby="clientCodeHelp"
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Emergency No.<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="emergencyno" aria-describedby="clientCodeHelp"
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Blood Group<span class="text-danger">*</span></label>
+                            <select class="form-select" id="" name="bloodgroup">
+                                <option selected disabled>Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Date Of Joining<span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="" name="joinningdate" aria-describedby="" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Department<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="department" aria-describedby="clientCodeHelp"
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Desigination<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="desgination" aria-describedby=""
+                                pattern="[A-Za-z\s]+"
+                                title="Please enter a valid Desigination. Only letters and spaces are allowed." required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Gender<span class="text-danger">*</span></label>
+                            <select class="form-select" id="" name="gender">
+                                <option selected disabled>Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Client Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="client_input" name="client_name" placeholder="Enter Client Name">
+                            <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="" class="form-label text-dark">Division<span class="text-danger">*</span></label>
+                            <select name="sa" class="form-control" id="division_select">
+                                <option value="" selected disabled>Select Division</option>
+                            </select>
+                            <input type="hidden" id="division_name" name="division_name">
+
+                        </div>
+
+                        <script>
+                            const clientNameInput = document.getElementById("client_input");
+                            const clientSuggestions = document.getElementById("client_suggestions");
+                        
+                            clientNameInput.addEventListener("input", function () {
+                                const keyword = this.value.trim();
+                        
+                                if (keyword) {
+                                    fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const clients = data.clients;
+                                            const suggestions = clients.map(client => `<div class="suggestion">${client.ccode} - ${client.cname}</div>`).join("");
+                                            clientSuggestions.innerHTML = suggestions;
+                        
+                                            // Handle click on a suggestion
+                                            const suggestionElements = document.querySelectorAll(".suggestion");
+                                            suggestionElements.forEach(suggestion => {
+                                                suggestion.addEventListener("click", function () {
+                                                    clientNameInput.value = suggestion.textContent;
+                                                    clientSuggestions.innerHTML = ""; // Clear suggestions
+                                                });
+                                            });
+                                        })
+                                        .catch(error => {
+                                            console.error("An error occurred while fetching user suggestions:", error);
+                                        });
+                                } else {
+                                    clientSuggestions.innerHTML = "";
+                                }
+                            });
+                        </script>
+                        <script>
+                            function fetchDivisions() {
+                                const clientName = document.getElementById("client_input").value;
+                                const divisionSelect = document.getElementById("division_select");
+                            
+                                $.ajax({
+                                    url: "{% url 'HRMS:fetch_divisions' %}",
+                                    data: { client_name: clientName },
+                                    dataType: "json",
+                                    success: function (data) {
+                                        divisionSelect.innerHTML = ""; // Clear previous options
+                                        divisionSelect.options[divisionSelect.options.length] = new Option("Select Division", "");
+                            
+                                        data.divisions.forEach(function (division) {
+                                            // Include the division ID as a data attribute
+                                            divisionSelect.options[divisionSelect.options.length] = new Option(division.division, division.division);
+                                            divisionSelect.options[divisionSelect.options.length - 1].setAttribute("data-division-id", division.did);
+                                        });
+                                    },
+                                    error: function (error) {
+                                        console.error("An error occurred while fetching divisions:", error);
+                                    }
+                                });
+                            }
+                            
+
+                            // Handle click on a suggestion
+                            document.getElementById("client_suggestions").addEventListener("click", function (event) {
+                                if (event.target.classList.contains("suggestion")) {
+                                    const clickedSuggestion = event.target.textContent;
+                                    document.getElementById("client_input").value = clickedSuggestion;
+                                    fetchDivisions(); // Fetch divisions when a suggestion is clicked
+                                }
+                            });
+                        </script>
+
+
+                        <script>
+                            // Handle click on a suggestion
+                            document.getElementById("client_suggestions").addEventListener("click", function (event) {
+                                if (event.target.classList.contains("suggestion")) {
+                                    const clickedSuggestion = event.target.textContent;
+                                    document.getElementById("client_input").value = clickedSuggestion;
+                                    fetchDivisions(); // Fetch divisions when a suggestion is clicked
+                                }
+                            });
+
+                            // Handle change in division select
+                            document.getElementById("division_select").addEventListener("change", function () {
+                                const selectedOption = this.options[this.selectedIndex];
+                                const selectedDivision = selectedOption.value;
+                                const selectedDivisionId = selectedOption.getAttribute("data-division-id");
+                            
+                                document.getElementById("division_name").value = selectedDivision;
+                                document.getElementById("division_id").value = selectedDivisionId;
+                            });
+                            
+
+                        </script>
+
+                        <input type="hidden" id="division_id" name="division_id">
+
+                        
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Present Address<span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="presentAddress" name="preaddress" rows="3" required></textarea>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">City<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="cityPresent" name="precity" aria-describedby=""
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">District<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="districtPresent" name="predist" aria-describedby=""
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">State<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="statePresent" name="prestate" aria-describedby=""
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">PIN Code<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="pinCodePresent" name="prepin" aria-describedby=""
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <label for="" class="form-label text-dark">Permanet Address<span
+                                    class="text-danger">*</span></label>
+                            <textarea class="form-control" id="permanentAddress" name="peraddress" rows="3" required></textarea>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">City<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="cityPermanent" name="percity" aria-describedby=""
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">District<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="districtPermanent" name="perdist" aria-describedby=""
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">State<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="statePermanent" name="perstate" aria-describedby=""
+                                required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">PIN Code<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="pinCodePermanent" name="perpin" aria-describedby=""
+                                required>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Adhar No.<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="aadharno" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">UAN No.<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="unno" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">EPF No.<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="epfno" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">ESI No.<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="esino" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Bank Name<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="bankname" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Bank Account Number<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="accountno" aria-describedby="" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="clientcode" class="form-label text-dark">IFSC code<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="ifsccode" aria-describedby="" required>
+                        </div>
+                    </div>
+
+                    <div class="container p-3 custom-border w-100">
+                        <div class="row mb-4">
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Basic<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="basic" name="basic" aria-describedby="" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">HRA<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="hra" name="hra" aria-describedby="" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Others<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="others" name="others" aria-describedby="" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Conv.<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="conv" name="conv" aria-describedby="" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">MAX EPF Wages<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="m_EPF" aria-describedby="" required value="15000">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">MAX ESI Wages<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="m_ESI" aria-describedby="" required value="21000">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">LTA<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="lta" name="lta" aria-describedby="" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Medical<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="medical" name="medical" aria-describedby=""
+                                    required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Rest. Allow<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="r_allow" name="resallow" aria-describedby=""
+                                    required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Gross salary<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="g_salary" aria-describedby="" disabled required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Net pay<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="n_pay" aria-describedby="" disabled required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">CTC<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="ctc" aria-describedby="" disabled required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Employee EPF<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="e_EPF" aria-describedby="" disabled required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Employee ESI<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="e_ESI" aria-describedby="" disabled required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Employer EPF<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="er_EPF" aria-describedby="" disabled required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Employer ESI<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="er_ESI" aria-describedby="" disabled required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Status<span
+                                        class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault1" id="" value="Active"
+                                        checked>
+                                    <label class="form-check-label" for="activests">
+                                        Active
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault1" id=""
+                                        value="Inactive">
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Inactive
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Wages Type<span
+                                        class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="wagestype" id="" value="1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Daily
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="wagestype" id="" value="2" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Monthly
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Billable Type<span
+                                        class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="billtype" id="" checked value="1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Billable
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="billtype" id="" value="0">
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        Non Billable
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Bonus<span
+                                        class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="bonus" id="" value="1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="bonus" id="" value="0" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="clientcode" class="form-label text-dark">Leave encash<span
+                                        class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="leave" id="" value="1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="leave" id="" value="0" checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="clientcode" class="form-label text-dark">EPF<span
+                                        class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="epf" id="" checked value="1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="epf" id="" value="0">
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 mb-3">
+                                <label for="clientcode" class="form-label text-dark">ESI<span
+                                        class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="esi" id="esi_yes" checked value="1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="esi" id="esi_no" value="0">
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="" class="form-label text-dark">EPF Pension<span
+                                        class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault8" id="epf_yes"
+                                        value="1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault8" id="epf_no" value="0"
+                                        checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="" class="form-label text-dark">TDS<span class="text-danger">*</span></label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault9" id="tds_yes"
+                                        value="1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault9" id="tds_no" value="0"
+                                        checked>
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="clientcode" class="form-label text-dark">HR Deduction Per Day<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="" aria-describedby="" pattern="[0-9]*"
+                                    title="Please enter a valid Medical using only numbers." required>
+                            </div>
+                        </div>
+                    </div><br>
+
+                    <button type="submit" class="btn btn-success me-md-2">Save</button>
+                    <button type="button" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+
+
+    <!-- Bootstrap 5 JS and Popper.js CDN (for Bootstrap functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // Get the present and permanent address elements
+        const presentAddressInput = document.getElementById("presentAddress");
+        const permanentAddressInput = document.getElementById("permanentAddress");
+        const sameAddressCheckbox = document.getElementById("sameAddress");
+
+        // Add an event listener to the checkbox
+        sameAddressCheckbox.addEventListener("change", function () {
+            // If the checkbox is checked, copy the present address fields to permanent address
+            if (this.checked) {
+                document.getElementById("permanentAddress").value = document.getElementById("presentAddress").value;
+                document.getElementById("cityPermanent").value = document.getElementById("cityPresent").value;
+                document.getElementById("districtPermanent").value = document.getElementById("districtPresent").value;
+                document.getElementById("statePermanent").value = document.getElementById("statePresent").value;
+                document.getElementById("pinCodePermanent").value = document.getElementById("pinCodePresent").value;
+            } else {
+                // If unchecked, clear the permanent address fields
+                document.getElementById("permanentAddress").value = "";
+                document.getElementById("cityPermanent").value = "";
+                document.getElementById("districtPermanent").value = "";
+                document.getElementById("statePermanent").value = "";
+                document.getElementById("pinCodePermanent").value = "";
+            }
+        });
+    </script>
+
+    <script>
+        function calculateSalary() {
+            // Get input values
+            const basic = parseFloat(document.getElementById('basic').value) || 0;
+            const hra = parseFloat(document.getElementById('hra').value) || 0;
+            const others = parseFloat(document.getElementById('others').value) || 0;
+            const conv = parseFloat(document.getElementById('conv').value) || 0;
+            const lta = parseFloat(document.getElementById('lta').value) || 0;
+            const medical = parseFloat(document.getElementById('medical').value) || 0;
+            const r_allow = parseFloat(document.getElementById('r_allow').value) || 0;
+
+            // Calculate gross salary
+            const grossSalary = basic + hra + others + conv + lta + medical + r_allow;
+
+            // Calculate employee EPF (Basic * 12%)
+            const employeeEPF = basic * 0.12;
+
+            // Calculate employee ESI (0.75% of gross salary)
+            const employeeESI = grossSalary * 0.0075;
+
+            // Calculate employer EPF (Basic * 13%)
+            const employerEPF = basic * 0.13;
+
+            // Calculate employer ESI (3.25% of gross salary)
+            const employerESI = grossSalary * 0.0325;
+
+            // Calculate net pay (gross salary - (employee EPF + employee ESI))
+            const netPay = grossSalary - (employeeEPF + employeeESI);
+
+            // Calculate CTC (gross salary + employee EPF + employee ESI + employer EPF + employer ESI)
+            const ctc = grossSalary + employeeEPF + employeeESI + employerEPF + employerESI;
+
+            // Update the input fields with the calculated values
+            document.getElementById('g_salary').value = grossSalary.toFixed(0);
+            document.getElementById('e_EPF').value = employeeEPF.toFixed(0);
+            document.getElementById('e_ESI').value = employeeESI.toFixed(1);
+            document.getElementById('er_EPF').value = employerEPF.toFixed(0);
+            document.getElementById('er_ESI').value = employerESI.toFixed(1);
+            document.getElementById('n_pay').value = netPay.toFixed(1);
+            document.getElementById('ctc').value = ctc.toFixed(0);
+        }
+
+        // Attach the calculateSalary function to input change events
+        document.getElementById('basic').addEventListener('input', calculateSalary);
+        document.getElementById('hra').addEventListener('input', calculateSalary);
+        document.getElementById('others').addEventListener('input', calculateSalary);
+        document.getElementById('conv').addEventListener('input', calculateSalary);
+        document.getElementById('lta').addEventListener('input', calculateSalary);
+        document.getElementById('medical').addEventListener('input', calculateSalary);
+        document.getElementById('r_allow').addEventListener('input', calculateSalary);
+
+        // Initial calculation
+        calculateSalary();
+
+    </script>
+
+</body>
+<script>
+    $(document).ready(function() {
+        // Function to handle form submission
+        $("#employeeForm").submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            // Serialize form data
+            var formData = $(this).serialize() + '&csrfmiddlewaretoken=' + $('input[name=csrfmiddlewaretoken]').val();
+            var endpointUrl = "{% url 'HRMS:add_employee' %}";
+    
+            // Send an AJAX POST request to your server
+            $.ajax({
+                type: "POST",
+                url: endpointUrl,
+                data: formData,
+                success: function(response) {
+                    // Handle the response from the server
+                    if (response.success) {
+                        // Show a success message with SweetAlert
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(function() {
+                            // Reload the current page after success
+                            location.reload();
+                        });                            
+                    } else {
+                        // Show an error message with SweetAlert
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function() {
+                    // Show an error message with SweetAlert
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Registration failed due to a server error. Please try again later.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    });        
+</script>
+</html>
+{% endblock content %}

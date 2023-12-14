@@ -1,0 +1,62 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body>
+
+    <div class="row row-sm mt-5">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between;">
+                    <h3 class="card-title">Client Division Estimate Billings Details</h3>
+                    <a href="#">Back</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable" >
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Client Code</th>
+                                    <th>Client Name</th>
+                                    <th>Division Name</th>
+                                    <th>Est. Strength</th>
+                                    <th>Est. Billing Wages</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody  id="filteredTableBody" style="font-size: 11px;">
+                                {% for division in divisions %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ division.cid.ccode }}</td>
+                                        <td>{{ division.cid.cname }}</td>
+                                        <td>{{ division.division }}</td>
+                                        {% if division.clientdivisionestimatebilling_set.exists %}
+                                            <td>{{ division.clientdivisionestimatebilling_set.first.strength }}</td>
+                                            <td>{{ division.clientdivisionestimatebilling_set.first.totalestimate }}</td>
+                                        {% else %}
+                                            <td>0</td>
+                                            <td>0</td>
+                                        {% endif %}
+                                        <td><a href="{% url 'HRMS:add_estimate' division.did %}">Add Estimate</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
+{% endblock content %}

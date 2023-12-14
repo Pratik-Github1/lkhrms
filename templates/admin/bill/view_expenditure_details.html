@@ -1,0 +1,71 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+
+
+<div class="row row-sm mt-5">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Client Expenditure Details</h3>
+                
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable" >
+                        <thead>
+                            <tr>
+                                <th style="font-size: 9px;">Sl No</th>
+                                <th style="font-size: 9px;">Client Name</th>
+                                <th style="font-size: 9px;">Month Year</th>
+                                <th style="font-size: 9px;">Exp. Date</th>
+                                <th style="font-size: 9px;">Material</th>
+                                <th style="font-size: 9px;">Fuel</th>
+                                <th style="font-size: 9px;">Operational</th>
+                                <th style="font-size: 9px;">Other</th>
+                                <th style="font-size: 9px;">Travel</th>
+                                <th style="font-size: 9px;">Total Expr.</th>
+                                <th style="font-size: 9px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 10px;">
+                            {% for i in client_expenditures %}
+                              
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{i.cid.cname}}</td>
+                                    <td>{{i.yearmonth}}</td>
+                                    <td>{{ i.expdate|date:"j-F-Y" }}</td>
+                                    <td>{{i.materialexpr}}</td>
+                                    <td>{{i.fuleexpr}}</td>
+                                    <td>{{i.adminexpr}}</td>
+                                    <td>{{i.otherexpr}}</td>
+                                    <td>{{i.travelexpr}}</td>
+                                    <td id="total-expr-{{forloop.counter}}"></td>
+                                    <td>Edit</td>
+                                </tr>
+                                {% endfor %}    
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Calculate and display total expenditure for each row
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("tbody tr").forEach(function (row, index) {
+            const material = parseFloat(row.querySelector("td:nth-child(5)").textContent);
+            const fuel = parseFloat(row.querySelector("td:nth-child(6)").textContent);
+            const operational = parseFloat(row.querySelector("td:nth-child(7)").textContent);
+            const other = parseFloat(row.querySelector("td:nth-child(8)").textContent);
+            const travel = parseFloat(row.querySelector("td:nth-child(9)").textContent);
+
+            const total = material + fuel + operational + other + travel;
+
+            const totalExprCell = row.querySelector(`#total-expr-${index + 1}`);
+            totalExprCell.textContent = total.toFixed(2); // Adjust the number of decimal places as needed
+        });
+    });
+</script>
+{% endblock content %}

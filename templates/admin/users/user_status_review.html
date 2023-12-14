@@ -1,0 +1,107 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+</head>
+
+<body>
+    <div class="container mt-5 fade-in custom-border">
+        <form action="">
+            <h3 class="text-center mb-4 text-primary">Users Status Report</h3>
+            <hr>
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="clientcode" class="form-label">User Roll<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" aria-describedby="clientCodeHelp" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="clientcode" class="form-label">User Id<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" aria-describedby="clientCodeHelp" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="" class="form-label text-dark">Month<span class="text-danger">*</span></label>
+                    <select class="form-select" id="" name="">
+                        <option value="" disabled selected>Select a month</option>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="" class="form-label text-dark">Year<span class="text-danger">*</span></label>
+                    <select class="form-select" id="" name="">
+                        <option value="" disabled selected>Select a Year</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+                
+            </div>
+            <div class="card shadow">
+        <div class="card-header p-3">
+            <strong>
+                Client Division Estimate Billings Details
+            </strong>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Client Code</th>
+                            <th>Client Name</th>
+                            <th>Division Name</th>
+                            <th>Est. Strength</th>
+                            <th>Est. Billing Wages</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    
+                      
+                    
+                        <tr>
+                            
+                            
+                            
+                        </tr>
+                        
+                    </tbody>
+                    <tfoot style="font-size: 10px;">
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Client Code</th>
+                            <th>Client Name</th>
+                            <th>Division Name</th>
+                            <th>Est. Strength</th>
+                            <th>Est. Billing Wages</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+        </form>
+    </div>
+
+</body>
+
+</html>
+{% endblock content %}

@@ -1,0 +1,203 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>   
+</head>
+<style>
+    .form-control {
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        font-size: 12px;
+    }
+
+    #searchClientForm {
+        margin-top: 10px;
+    }
+
+    #example {
+        font-size: 11px;
+    }
+
+    #CardTable1 {
+        font-size: 14px;
+    }
+
+    #icons {
+        cursor: pointer;
+    }
+    /* styles.css */
+
+    .small-input {
+        width: 60px; /* Adjust the width to your preference */
+        padding: 4px; /* Adjust the padding to your preference */
+    }
+
+    #attnDtlTable{
+        font-size: 12px;
+    }
+</style>
+
+<body>
+    {% for message in messages %}
+        <div class="alert alert-primary alert-dismissible fade show mt-5" role="alert">
+            <span class="alert-inner--text">{{ message }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+    {% endfor %}
+    <div class="card shadow mt-5" id="CardTable1" >
+        <div class="card-header" style="display: flex; justify-content: space-between;">
+            <h3 class="card-title">Process Attendance</h3>
+            <button class="btn btn-sm btn-warning" onclick="goBack()">Back</button>
+        </div>
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+        <div class="card-body">
+            <div class="row p-3 mb-3" id="searchbox">
+                <form method="POST" id="processAttendanceForm">
+                    {% csrf_token %}
+                    <div class="row w-100 ">
+                        <div class="col-md-5 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Client Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="client_input" name="client_name" placeholder="Enter Client Name">
+                            <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="form-label text-dark">Division<span class="text-danger">*</span></label>
+                            <select name="sa" class="form-control" id="division_select">
+                                <option value="" selected disabled>Select Division</option>
+                            </select>
+                            <input type="hidden" id="division_name" name="division_name">
+            
+                        </div>
+            
+                        <script>
+                            const clientNameInput = document.getElementById("client_input");
+                            const clientSuggestions = document.getElementById("client_suggestions");
+                        
+                            clientNameInput.addEventListener("input", function () {
+                                const keyword = this.value.trim();
+                        
+                                if (keyword) {
+                                    fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const clients = data.clients;
+                                            const suggestions = clients.map(client => `<div class="suggestion">${client.ccode} - ${client.cname}</div>`).join("");
+                                            clientSuggestions.innerHTML = suggestions;
+                        
+                                            // Handle click on a suggestion
+                                            const suggestionElements = document.querySelectorAll(".suggestion");
+                                            suggestionElements.forEach(suggestion => {
+                                                suggestion.addEventListener("click", function () {
+                                                    clientNameInput.value = suggestion.textContent;
+                                                    clientSuggestions.innerHTML = ""; // Clear suggestions
+                                                });
+                                            });
+                                        })
+                                        .catch(error => {
+                                            console.error("An error occurred while fetching user suggestions:", error);
+                                        });
+                                } else {
+                                    clientSuggestions.innerHTML = "";
+                                }
+                            });
+                        
+                            function fetchDivisions() {
+                                const clientName = clientNameInput.value;
+                                const divisionSelect = document.getElementById("division_select");
+                        
+                                $.ajax({
+                                    url: "{% url 'HRMS:fetch_divisions' %}",
+                                    data: { client_name: clientName },
+                                    dataType: "json",
+                                    success: function (data) {
+                                        divisionSelect.innerHTML = ""; // Clear previous options
+                                        divisionSelect.options[divisionSelect.options.length] = new Option("Select Division", "");
+                        
+                                        data.divisions.forEach(function (division) {
+                                            // Include the division ID as a data attribute
+                                            divisionSelect.options[divisionSelect.options.length] = new Option(division.division, division.division);
+                                            divisionSelect.options[divisionSelect.options.length - 1].setAttribute("data-division-id", division.did);
+                                        });
+                                    },
+                                    error: function (error) {
+                                        console.error("An error occurred while fetching divisions:", error);
+                                    }
+                                });
+                            }
+                        
+                            // Handle click on a suggestion
+                            document.getElementById("client_suggestions").addEventListener("click", function (event) {
+                                if (event.target.classList.contains("suggestion")) {
+                                    const clickedSuggestion = event.target.textContent;
+                                    clientNameInput.value = clickedSuggestion;
+                                    fetchDivisions(); // Fetch divisions when a suggestion is clicked
+                                }
+                            });
+                        
+                            // Handle change in division select
+                            document.getElementById("division_select").addEventListener("change", function () {
+                                const selectedOption = this.options[this.selectedIndex];
+                                const selectedDivision = selectedOption.value;
+                                const selectedDivisionId = selectedOption.getAttribute("data-division-id");
+                        
+                                document.getElementById("division_name").value = selectedDivision;
+                                document.getElementById("division_id").value = selectedDivisionId;
+                            });
+                        </script>
+                        
+                        <input type="hidden" id="division_id" name="division_id">
+            
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <select class="form-control" id="selected_month" name="selected_month">
+                                <option selected disabled>---Select Month---</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <select class="form-control" id="selected_year" name="selected_year">
+                                <option value="" selected disabled>Select Year</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button type="submit" class="btn btn-primary">Process Attendance</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>
+{% endblock content %}

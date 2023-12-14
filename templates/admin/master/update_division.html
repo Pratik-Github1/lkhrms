@@ -1,0 +1,164 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Division</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+<style>
+    .container {
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+
+<body>
+    <form action="" method="post" id="addDivisionForm" class="nt-5">
+        {% csrf_token %}
+
+        <div class="card shadow" id="ClientCard">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Update Division Details</h3>
+                <a href="{% url 'HRMS:division_lists' %}">Back</a>
+            </div>
+            
+            <div class="card-body cardd">
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <label for="client_input" class="form-label text-dark">Client Name<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="client_input" name="client_name" aria-describedby=""
+                            placeholder="Enter Client name..." value="{{ division.cid.ccode }}-{{ division.cid.cname }}" disabled>
+                        <div style="color: red;" class="mt-1 p-1">Can Not Edit</div>
+                    </div>
+                    <script>
+                        const clientNameInput = document.getElementById("client_input");
+                        const clientSuggestions = document.getElementById("client_suggestions");
+
+                        clientNameInput.addEventListener("input", function () {
+                            const keyword = this.value.trim();
+
+                            if (keyword) {
+                                fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        const clients = data.clients;
+                                        const suggestions = clients.map(client_name => `<div class="suggestion">${client_name}</div>`).join("");
+                                        clientSuggestions.innerHTML = suggestions;
+
+                                        // Handle click on a suggestion
+                                        const suggestionElements = document.querySelectorAll(".suggestion");
+                                        suggestionElements.forEach(suggestion => {
+                                            suggestion.addEventListener("click", function () {
+                                                clientNameInput.value = suggestion.textContent;
+                                                clientSuggestions.innerHTML = ""; // Clear suggestions
+                                            });
+                                        });
+                                    })
+                                    .catch(error => {
+                                        console.error("An error occurred while fetching user suggestions:", error);
+                                    });
+                            } else {
+                                clientSuggestions.innerHTML = "";
+                            }
+                        });
+
+                    </script>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Division Name<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="division_name" class="form-control" id="" aria-describedby=""
+                            value="{{ division.division }}">
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Bank Name<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="bank_name" class="form-control" id="" aria-describedby=""
+                            pattern="[A-Za-z\s]+"
+                            title="Please enter a valid bank name. Only letters and spaces are allowed." value="{{ division.bankname }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="clientcode" class="form-label text-dark">IFSC code<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="ifsc_code" class="form-control" id="" aria-describedby=""
+                            title="Please enter a valid 12-character IFSC code using uppercase letters and numbers."
+                            value="{{ division.ifsccode }}">
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-12 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Virtual Acc. No.<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="virtual_account_number" class="form-control" id="" aria-describedby=""
+                                title="Please enter a valid 16-digit account number using uppercase letters and numbers."
+                                value="{{ division.bankaccno }}">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success me-md-2 mb-3">Update</button>
+            </div>
+        </div>
+    </form>
+
+   
+</body>
+<script>
+    $(document).ready(function() {
+        // Function to handle form submission
+        $("#addDivisionForm").submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            // Serialize form data
+            var formData = $(this).serialize() + '&csrfmiddlewaretoken=' + $('input[name=csrfmiddlewaretoken]').val();
+            var endpointUrl = "{% url 'HRMS:update_division' division_id=division.did %}";
+    
+            // Send an AJAX POST request to your server
+            $.ajax({
+                type: "POST",
+                url: endpointUrl,
+                data: formData,
+                success: function(response) {
+                    // Handle the response from the server
+                    if (response.success) {
+                        // Show a success message with SweetAlert
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(function() {
+                            // Reload the current page after success
+                            location.reload();
+                        });                            
+                    } else {
+                        // Show an error message with SweetAlert
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function() {
+                    // Show an error message with SweetAlert
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Registration failed due to a server error. Please try again later.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    });        
+</script>
+</html>
+{% endblock content %}

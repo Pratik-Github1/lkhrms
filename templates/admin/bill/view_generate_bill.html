@@ -1,0 +1,105 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Details</title>
+</head>
+<style>
+</style>
+
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="text-primary">Bill Details</h1>
+            </div>
+            <div class="col-md-6">
+                <a href="{% url 'HRMS:generate_new_bill' %}" class="btn btn-md btn-primary float-end">Generate New Bill</a>
+            </div>
+        </div>
+        
+            <hr>
+            <form>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Client Name</label>
+                            <input type="text" class="form-control" id="clientName" name="clientName" required>
+                        </div>
+                      
+                        <button type="submit" class="btn btn-md btn-primary">Search</button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="division" class="form-label">Bill No</label>
+                            <input type="number" class="form-control" id="division" name="division" required>
+                        </div>
+
+            </form>
+    </div>
+    </div>
+    <hr>
+
+    <div class="table-responsive">
+        <table class="table table-bordered mt-4 text-center table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Sl No</th>
+                    <th scope="col">Client Name</th>
+                    <th scope="col">Division Name</th>
+                    <th scope="col">Month-Year</th>
+                    <th scope="col">Bill Date</th>
+                    <th scope="col">Bill No</th>
+                    <th scope="col">Amount(Bf.GST)</th>
+                    <th scope="col">GST Amount</th>
+                    <th scope="col">Bill Amount</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Client A</td>
+                    <td>Division X</td>
+                    <td>January 2023</td>
+                    <td>100</td>
+                    <td>9500</td>
+                    <td>2</td>
+                    <td>42</td>
+                    <td>2345</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm">View Bill</button>
+                        <button class="btn btn-danger btn-sm">Delete Bill</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    </div>
+</body>
+
+</html>
+{% endblock content %}

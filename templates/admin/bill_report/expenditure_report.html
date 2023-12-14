@@ -1,0 +1,180 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tableexport@5.2.0/dist/js/tableexport.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable
+            var table = $('#exampleData').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible',
+                            modifier: {
+                                selected: null
+                            }
+                        },
+                        footer: true // Include footer (tfoot) in the Excel export
+                    }
+                ],
+                drawCallback: function (settings) {
+                    var api = this.api();
+                    updateTotals(api);
+                }
+            });
+        
+            // Calculate and update the totals
+            function updateTotals(api) {
+                var materialTotal = 0;
+                var fuelTotal = 0;
+                var operationalTotal = 0;
+                var othersTotal = 0;
+                var tourTravelTotal = 0;
+                var totalExpenditure = 0;
+        
+                api.rows({ search: 'applied' }).every(function () {
+                    var rowData = this.data();
+                    materialTotal += parseFloat(rowData[5]) || 0;
+                    fuelTotal += parseFloat(rowData[6]) || 0;
+                    operationalTotal += parseFloat(rowData[7]) || 0;
+                    othersTotal += parseFloat(rowData[8]) || 0;
+                    tourTravelTotal += parseFloat(rowData[9]) || 0;
+                    totalExpenditure += parseFloat(rowData[10]) || 0;
+                });
+        
+                $('#material-total').text(materialTotal.toFixed(2));
+                $('#fuel-total').text(fuelTotal.toFixed(2));
+                $('#operational-total').text(operationalTotal.toFixed(2));
+                $('#others-total').text(othersTotal.toFixed(2));
+                $('#tour-travel-total').text(tourTravelTotal.toFixed(2));
+                $('#total-expenditure').text(totalExpenditure.toFixed(2));
+            }
+        
+            // Initial totals calculation
+            updateTotals(table);
+        
+            // Handle search button click
+            $('#searchData').click(function () {
+                var selectedMonth = $('#monthSelect').val();
+                var selectedYear = $('#yearSelect').val();
+        
+                table.columns(3).search(selectedMonth).draw();
+                table.columns(4).search(selectedYear).draw();
+            });
+        
+            // Handle download Excel button click
+            $('#downloadExcel').click(function () {
+                // Export the table to Excel format
+                table.button('.buttons-excel').trigger();
+            });
+        });
+        
+    </script>
+</head>
+<body>
+    <!-- <div class="row mb-3">
+        <div class="col-md-4">
+            <select id="monthSelect" class="form-control">
+                <option selected disabled>--Choose Month--</option>
+                <option value="All">All</option>
+                {% for month in distinct_months %}
+                    <option value="{{ month }}">{{ month }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select id="yearSelect" class="form-control">
+                <option selected disabled>--Choose Year--</option>
+                {% for year in distinct_years %}
+                    <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button id="searchData" class="btn btn-sm btn-primary">Search</button>
+        </div>
+        <div class="col-md-2">
+            <button id="downloadExcel" class="btn btn-sm btn-primary">Download Excel</button>
+        </div>
+    </div> -->
+    <div class="card shadow cardd">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6>Expenditure Reports Details</h6>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="exampleData" class="table table-striped table-bordered" style="font-size: small;">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>CLIENT NAME</th>
+                            <th>DIVISION</th>
+                            <th>MONTH</th>
+                            <th>YEAR</th>
+                            <th>MATERIAL</th>
+                            <th>FUEL</th>
+                            <th>OPERATIONAL</th>
+                            <th>OTHERS</th>
+                            <th>TOUR &amp; TRAVEL</th>
+                            <th>TOTAL EXPENDITURE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in expenditure_reports %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ report.CLIENT_NAME }}</td>
+                                <td>{{ report.DIVISION }}</td>
+                                <td>{{ report.MONTH }}</td>
+                                <td>{{ report.YEAR }}</td>
+                                <td>{{ report.MATERIAL }}</td>
+                                <td>{{ report.FUEL }}</td>
+                                <td>{{ report.OPERATIONAL }}</td>
+                                <td>{{ report.OTHERS }}</td>
+                                <td>{{ report.TOUR_TRAVEL }}</td>
+                                <td class="total-expenditure">
+                                    {{ report.MATERIAL|add:report.FUEL|add:report.OPERATIONAL|add:report.OTHERS|add:report.TOUR_TRAVEL }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr style="font-size: 10px;">
+                            <th>SN</th>
+                            <th>CLIENT NAME</th>
+                            <th>DIVISION</th>
+                            <th>MONTH</th>
+                            <th>YEAR</th>
+                            <th id="material-total">0</th>
+                            <th id="fuel-total">0</th>
+                            <th id="operational-total">0</th>
+                            <th id="others-total">0</th>
+                            <th id="tour-travel-total">0</th>
+                            <th id="total-expenditure">0</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+</html>
+{% endblock content %}

@@ -1,0 +1,350 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<style>
+</style>
+
+<body>
+
+
+    <div class="card mt-5 shadow-sm">
+        <div class="card-header" style="display: flex; justify-content: space-between;">
+            <h3 class="card-title">Add New Bill</h3>
+            <a href="{% url 'HRMS:view_bill' %}">View Bills</a>
+        </div>
+
+        <div class="card-body pb-2">
+            <form id="BillNewForm">
+
+                <div class="row w-100">
+                    <div class="col-md-5 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Client Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="client_input" name="client_name" placeholder="Enter Client Name">
+                        <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="form-label text-dark">Division<span class="text-danger">*</span></label>
+                        <select name="sa" class="form-control" id="division_select">
+                            <option value="" selected disabled>Select Division</option>
+                        </select>
+                        <input type="hidden" id="division_name" name="division_name">
+        
+                    </div>
+        
+                    <script>
+                        const clientNameInput = document.getElementById("client_input");
+                        const clientSuggestions = document.getElementById("client_suggestions");
+                    
+                        clientNameInput.addEventListener("input", function () {
+                            const keyword = this.value.trim();
+                    
+                            if (keyword) {
+                                fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        const clients = data.clients;
+                                        const suggestions = clients.map(client => `<div class="suggestion">${client.ccode} - ${client.cname}</div>`).join("");
+                                        clientSuggestions.innerHTML = suggestions;
+                    
+                                        // Handle click on a suggestion
+                                        const suggestionElements = document.querySelectorAll(".suggestion");
+                                        suggestionElements.forEach(suggestion => {
+                                            suggestion.addEventListener("click", function () {
+                                                clientNameInput.value = suggestion.textContent;
+                                                clientSuggestions.innerHTML = ""; // Clear suggestions
+                                            });
+                                        });
+                                    })
+                                    .catch(error => {
+                                        console.error("An error occurred while fetching user suggestions:", error);
+                                    });
+                            } else {
+                                clientSuggestions.innerHTML = "";
+                            }
+                        });
+                    
+                        function fetchDivisions() {
+                            const clientName = clientNameInput.value;
+                            const divisionSelect = document.getElementById("division_select");
+                    
+                            $.ajax({
+                                url: "{% url 'HRMS:fetch_divisions' %}",
+                                data: { client_name: clientName },
+                                dataType: "json",
+                                success: function (data) {
+                                    divisionSelect.innerHTML = ""; // Clear previous options
+                                    divisionSelect.options[divisionSelect.options.length] = new Option("Select Division", "");
+                    
+                                    data.divisions.forEach(function (division) {
+                                        // Include the division ID as a data attribute
+                                        divisionSelect.options[divisionSelect.options.length] = new Option(division.division, division.division);
+                                        divisionSelect.options[divisionSelect.options.length - 1].setAttribute("data-division-id", division.did);
+                                    });
+                                },
+                                error: function (error) {
+                                    console.error("An error occurred while fetching divisions:", error);
+                                }
+                            });
+                        }
+                    
+                        // Handle click on a suggestion
+                        document.getElementById("client_suggestions").addEventListener("click", function (event) {
+                            if (event.target.classList.contains("suggestion")) {
+                                const clickedSuggestion = event.target.textContent;
+                                clientNameInput.value = clickedSuggestion;
+                                fetchDivisions(); // Fetch divisions when a suggestion is clicked
+                            }
+                        });
+                    
+                        // Handle change in division select
+                        document.getElementById("division_select").addEventListener("change", function () {
+                            const selectedOption = this.options[this.selectedIndex];
+                            const selectedDivision = selectedOption.value;
+                            const selectedDivisionId = selectedOption.getAttribute("data-division-id");
+                    
+                            document.getElementById("division_name").value = selectedDivision;
+                            document.getElementById("division_id").value = selectedDivisionId;
+                        });
+                    </script>
+                    
+                    <input type="hidden" id="division_id" name="division_id">
+        
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+
+                        
+
+                        <div class="mb-3">
+                            <label for="clientcode" class="form-label text-dark">Client Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="client_input" name="client_name" placeholder="Enter Client Name">
+                            <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label text-dark">Division<span class="text-danger">*</span></label>
+                            <select name="sa" class="form-control" id="division_select">
+                                <option value="" selected disabled>Select Division</option>
+                            </select>
+                            <input type="hidden" id="division_name" name="division_name">
+            
+                        </div>
+            
+                        <script>
+                            const clientNameInput = document.getElementById("client_input");
+                            const clientSuggestions = document.getElementById("client_suggestions");
+                        
+                            clientNameInput.addEventListener("input", function () {
+                                const keyword = this.value.trim();
+                        
+                                if (keyword) {
+                                    fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const clients = data.clients;
+                                            const suggestions = clients.map(client => `<div class="suggestion">${client.ccode} - ${client.cname}</div>`).join("");
+                                            clientSuggestions.innerHTML = suggestions;
+                        
+                                            // Handle click on a suggestion
+                                            const suggestionElements = document.querySelectorAll(".suggestion");
+                                            suggestionElements.forEach(suggestion => {
+                                                suggestion.addEventListener("click", function () {
+                                                    clientNameInput.value = suggestion.textContent;
+                                                    clientSuggestions.innerHTML = ""; // Clear suggestions
+                                                });
+                                            });
+                                        })
+                                        .catch(error => {
+                                            console.error("An error occurred while fetching user suggestions:", error);
+                                        });
+                                } else {
+                                    clientSuggestions.innerHTML = "";
+                                }
+                            });
+                        
+                            function fetchDivisions() {
+                                const clientName = clientNameInput.value;
+                                const divisionSelect = document.getElementById("division_select");
+                        
+                                $.ajax({
+                                    url: "{% url 'HRMS:fetch_divisions' %}",
+                                    data: { client_name: clientName },
+                                    dataType: "json",
+                                    success: function (data) {
+                                        divisionSelect.innerHTML = ""; // Clear previous options
+                                        divisionSelect.options[divisionSelect.options.length] = new Option("Select Division", "");
+                        
+                                        data.divisions.forEach(function (division) {
+                                            // Include the division ID as a data attribute
+                                            divisionSelect.options[divisionSelect.options.length] = new Option(division.division, division.division);
+                                            divisionSelect.options[divisionSelect.options.length - 1].setAttribute("data-division-id", division.did);
+                                        });
+                                    },
+                                    error: function (error) {
+                                        console.error("An error occurred while fetching divisions:", error);
+                                    }
+                                });
+                            }
+                        
+                            // Handle click on a suggestion
+                            document.getElementById("client_suggestions").addEventListener("click", function (event) {
+                                if (event.target.classList.contains("suggestion")) {
+                                    const clickedSuggestion = event.target.textContent;
+                                    clientNameInput.value = clickedSuggestion;
+                                    fetchDivisions(); // Fetch divisions when a suggestion is clicked
+                                }
+                            });
+                        
+                            // Handle change in division select
+                            document.getElementById("division_select").addEventListener("change", function () {
+                                const selectedOption = this.options[this.selectedIndex];
+                                const selectedDivision = selectedOption.value;
+                                const selectedDivisionId = selectedOption.getAttribute("data-division-id");
+                        
+                                document.getElementById("division_name").value = selectedDivision;
+                                document.getElementById("division_id").value = selectedDivisionId;
+
+                                console.log(selectedDivisionId)
+                            });
+                        </script>
+                        
+                        <input type="hidden" id="division_id" name="division_id">
+            
+
+                        
+                        <div class="mb-3">
+                            <label for="month" class="form-label">Month</label>
+                            <select class="form-select" id="month" name="month" required>
+                                <option value="" disabled selected>Select Month</option>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="March">April</option>
+                                <option value="March">May</option>
+                                <option value="March">June</option>
+                                <option value="March">July</option>
+                                <option value="March">August</option>
+                                <option value="March">September</option>
+                                <option value="March">October</option>
+                                <option value="March">November</option>
+                                <option value="March">December</option>
+                                <!-- Add more months here -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">NF Holidays Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Material Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Machinary Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="division" class="form-label">Division</label>
+                            <select class="form-select" id="year" name="year" >
+                                <option value="" disabled selected>Select Division</option>
+                               
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Year</label>
+                            <select class="form-select" id="year" name="year" >
+                                <option value="" disabled selected>Select Year</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <!-- Add more years here -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Bonus Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Fule Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Others Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Bill No</label>
+                            <input type="text" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Strength</label>
+                            <input type="text" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Service Charge</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">GST</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Total Bill Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Bill Date</label>
+                            <input type="date" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Wages Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">EPF Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">ESI Amount</label>
+                            <input type="number" class="form-control" id="clientName" name="clientName" >
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Bill Copy (In .pdf format)<span
+                                    class="text-danger">*</span></label>
+                            <input type="file" name="" id="" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="clientName" class="form-label">Remark</label>
+                            <textarea name="" rows="3" cols="20" id="" class="form-control"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success me-md-2">Save</button>
+                        <button type="reset" class="btn btn-danger" id="cancelButton">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
+{% endblock content %}

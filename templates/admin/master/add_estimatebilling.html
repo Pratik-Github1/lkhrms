@@ -1,0 +1,766 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#categoryForm").submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'HRMS:add_estimate' division_id=div.did %}",
+                    data: $("#categoryForm").serialize(),
+                    success: function () {
+                        // Handle success (if needed)
+                        location.reload(); // Refresh the page after successful submission
+                    },
+                    error: function () {
+                        // Handle error (if needed)
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<style>
+    .label-text{
+        font-size: 10px;
+    }
+
+    .no-spinner::-webkit-inner-spin-button,
+    .no-spinner::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    
+</style>
+<body>
+    <div class="container" style="font-size: 11px;">
+        <h4 class="text-center mb-4 text-primary">Client Division Estimate Billing Details</h4>
+        <hr>
+        <div class="row" style="size: 12px;">
+            <div class="col-md-4">
+                <label for="clientcode" class="form-label text-dark">Client</label>
+                <input type="text" class="form-control small-input" id="clientDivision" value="{{ div.cid.cname }}" disabled>
+            </div>
+            <div class="col-md-4">
+                <label for="clientcode" class="form-label text-dark">Division</label>
+                <input type="text" class="form-control small-input" id="clientDivision" value="{{ div.division }}" disabled>
+            </div>
+        </div>
+        
+        <form method="post" id="categoryForm" style="font-size: 10px;">
+            {% csrf_token %}
+            <div class="row mb-4 w-100 align-items-end mt-4">
+                
+                <div class="col-sm-2 mb-3">
+                    <label for="category" class="form-label text-dark">Category<span class="text-danger">*</span></label>
+                    <input type="text" name="category" class="form-control" id="category"
+                        aria-describedby="categoryHelp" pattern="[A-Za-z\s]+"
+                        title="Please enter a valid category name. Only letters and spaces are allowed." required style="size: 10px;">
+                </div>
+                
+                <div class="col-sm-1 mb-3">
+                    <label for="strength" class="form-label text-dark">Strength<span
+                            class="text-danger">*</span></label>
+                    <input type="number" name="strength" class="form-control no-spinner" id="strength" aria-describedby="strengthHelp" required>
+                </div>
+
+                <div class="col-sm-1 mb-3">
+                    <label for="empWages" class="form-label text-dark mb-3">EMP Wages<span class="text-danger">*</span></label>
+                    <input type="number" name="Employee_wages" class="form-control no-spinner" id="empWages" aria-describedby="empWagesHelp" required>
+                </div>
+                <div class="col-sm-1 mb-3">
+                    <label for="totalWages" class="form-label text-dark">Total Wages<span
+                            class="text-danger">*</span></label>
+                    <input type="text" name="Total_wages" class="form-control" id="totalWages" aria-describedby="totalWagesHelp">
+                </div>
+                <div class="col-sm-1 mb-3">
+                    <label for="epfWages" class="form-label text-dark">EPF Wages<span class="text-danger">*</span></label>
+                    <input type="text" name="EPF_wages" class="form-control no-spinner" id="epfWages"
+                        aria-describedby="epfWagesHelp">
+                </div>
+                <div class="col-sm-1 mb-3">
+                    <label for="esiWages" class="form-label text-dark">ESI Wages<span
+                            class="text-danger">*</span></label>
+                    <input type="number" name="ESI_wages" class="form-control no-spinner" id="esiWages"
+                        aria-describedby="esiWagesHelp">
+                </div>
+                <div class="col-sm-1 mb-3">
+                    <label for="epfAmount" class="form-label text-dark">EPF(13%)<span
+                            class="text-danger">*</span></label>
+                    <input type="number" name="EPF" class="form-control no-spinner" id="epfAmount" aria-describedby="epfAmountHelp"
+                    >
+                </div>
+                <div class="col-sm-1 mb-3">
+                    <label for="esiAmount" class="form-label text-dark">ESI(3.25%)<span
+                            class="text-danger">*</span></label>
+                    <input type="number" name="ESI" class="form-control no-spinner" id="esiAmount" aria-describedby="esiAmountHelp"
+                    >
+                </div>
+                <div class="col-sm-1 mb-3">
+                    <label class="form-label text-dark">EPF<span class="text-danger">*</span></label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="epfRadio" id="epfYes" value="1" checked>
+                        <label class="form-check-label" for="epfYes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="epfRadio" id="epfNo" value="0">
+                        <label class="form-check-label" for="epfNo">No</label>
+                    </div>
+                </div>
+                <div class="col-sm-1 mb-3">
+                    <label class="form-label text-dark">ESI<span class="text-danger">*</span></label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="esiRadio" id="esiYes" value="1" checked>
+                        <label class="form-check-label" for="esiYes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="esiRadio" id="esiNo" value="0">
+                        <label class="form-check-label" for="esiNo">No</label>
+                    </div>
+                </div>
+                <div class="col-sm-1 mb-3">
+                    <button type="submit" id="addCategoryBtn" class="btn btn-primary btn-md"
+                        style="margin-top: 20px;width: 80px;">Add</button>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr class="text-center">
+                        <th>SL No</th>
+                        <th>Category</th>
+                        <th>Strength</th>
+                        <th>Emp. Wages</th>
+                        <th>Total Wages</th>
+                        <th>EPF Wages</th>
+                        <th>ESI Wages</th>
+                        <th>EPF</th>
+                        <th>ESI</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if estimate_billing_dtls %}
+                        {% for estimate_billing_dtl in estimate_billing_dtls %}
+                        <tr class="text-center">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ estimate_billing_dtl.category }}</td>
+                            <td>{{ estimate_billing_dtl.strength }}</td>
+                            <td>{{ estimate_billing_dtl.empwages }}</td>
+                            <td>{{ estimate_billing_dtl.perempwages }}</td>
+                            <td>{{ estimate_billing_dtl.epfwages }}</td>
+                            <td>{{ estimate_billing_dtl.esiwages }}</td>
+                            <td>{{ estimate_billing_dtl.epf }}</td>
+                            <td>{{ estimate_billing_dtl.esi }}</td>
+                            <td>Edit</td>
+                        </tr>
+                        {% endfor %}
+                        <tfoot>
+                            <tr class="text-center">
+                                <td colspan="2">Total</td>
+                                <td id="total_Strength">200</td>
+                                <td id="total_EmpWages">200</td>
+                                <td id="total_TotalWages">200</td>
+                                <td id="total_EPFWages">200</td>
+                                <td id="total_ESIWages">200</td>
+                                <td id="total_EPF">200</td>
+                                <td id="total_ESI">200</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center">No data available.</td>
+                        </tr>
+                    {% endif %}                                           
+                </tbody>
+            </table>
+        </div><br>
+        <form  method="post" id="strength" action="{% url 'HRMS:add_clientdivisionestimatebilling' division_id=div.did %}">
+            {% csrf_token %}
+            <div class="row mb-4 w-100 align-items-end">
+                <div class="col-md-2 mb-3">
+                    <label for="totalStrength" class="form-label text-dark">Total Strength<span
+                            class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="totalStrength" name="strength" aria-describedby="clientCodeHelp" >
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="totalBilling" class="form-label text-dark">Total Billing Wages<span
+                            class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="totalBilling" name="billingwages" aria-describedby="clientCodeHelp" >
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">EPF<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="epf" name="billingepf" aria-describedby="clientCodeHelp" required >
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">ESI<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="esi" name="billingesi" aria-describedby="clientCodeHelp" required >
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="serviceChargeType" class="form-label text-dark">Service Charge On<span
+                            class="text-danger">*</span></label>
+                    <select class="form-select" aria-label="Default select example" id="serviceChargeType" name="seviceon">
+                        <option value="1">Per Head</option>
+                        <option value="2">Wages Percentage</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="serviceChargeValue" class="form-label text-dark">Service Charge Value<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="serviceChargeValue" name="sevicecharge" aria-describedby="clientCodeHelp"
+                        required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="totalServiceCharge" class="form-label text-dark">Total Service Charge <span
+                            class="text-danger">*</span></label>
+                    <input type="number" class="form-control" name="totalsevicecharge" id="totalServiceCharge" aria-describedby="clientCodeHelp"
+                        >
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">Bonus&nbsp;(8.33%)<span
+                            class="text-danger">*</span></label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="bonusYes1" value="Yes">
+                        <label class="form-check-label" for="Yes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="bonusNo1" value="0" checked>
+                        <label class="form-check-label" for="No">No</label>
+                    </div>
+                    <div class="mt-3">
+                        <!-- Initially set the bonus amount to 0 and disable it -->
+                        <input type="number" class="form-control mt-3" id="bonusAmount1" name="bonus" value="0" >
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">Leave encash&nbsp;(5.25%)<span
+                            class="text-danger">*</span></label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="bonusYes2" value="Yes">
+                        <label class="form-check-label" for="Yes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="bonusNo2" value="No"
+                            checked>
+                        <label class="form-check-label" for="No">No</label>
+                    </div>
+                    <div class="mt-3">
+                        <!-- Initially set the bonus amount to 0 and disable it -->
+                        <input type="number" class="form-control mt-3" id="bonusAmount2" name="leave" value="0" >
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">NF Holidays&nbsp;(3.67%)<span
+                            class="text-danger">*</span></label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="bonusYes3" value="Yes">
+                        <label class="form-check-label" for="Yes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" id="bonusNo3" value="No"
+                            checked>
+                        <label class="form-check-label" for="No">No</label>
+                    </div>
+                    <div class="mt-3">
+                        <!-- Initially set the bonus amount to 0 and disable it -->
+                        <input type="number" class="form-control mt-3" id="bonusAmount3" name="nfholidays" value="0" >
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">GST (%)<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="gstPercentage" aria-describedby="clientCodeHelp" name="gst" required>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-2 mb-3">
+                    <label for="clientcode" class="form-label text-dark">Material Charges<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="materialCharges" name="material" aria-describedby="clientCodeHelp"
+                        
+                        required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">Fule Charges<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="fule" id="fuelCharges" aria-describedby="clientCodeHelp" required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">Machinary Charges<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="machinary" id="machineryCharges" aria-describedby="clientCodeHelp"
+                        required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">Others<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="others" id="others" aria-describedby="clientCodeHelp" required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark">GST Amount<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="totalgst" id="gstTotalAmount" aria-describedby="clientCodeHelp" required
+                        >
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label for="" class="form-label text-dark" style="margin-top: -26px;">Total Estimate Amount<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="totalEstimateAmount" name="totalestimate" aria-describedby="clientCodeHelp"
+                        required >
+                </div>
+            </div>
+            <div class="row mb-4">
+                <label for="clientcode" class="form-label text-dark">GST On<span class="text-danger">*</span></label>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1," name="gston" id="flexCheckDefault1" checked>
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Wages
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="2," name="gston" id="flexCheckDefault2" checked>
+                        <label class="form-check-label" for="flexCheckDefault">
+                            EPF
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="3," name="gston" id="flexCheckDefault3" checked>
+                        <label class="form-check-label" for="flexCheckDefault">
+                            ESI
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="4," name="gston" id="flexCheckDefault4" checked>
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Service Charge
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="5," name="gston" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Bonus
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="6," name="gston" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Leave Encash
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="7," name="gston" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            NF Holidays
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="8," name="gston" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Material
+                        </label>
+                    </div>
+                </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="9," name="gston" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Fule
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="10," name="gston" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Machinary Charges
+                        </label>
+                    </div>
+                </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="col-md-1 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="11," name="gston" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Others
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success me-md-2">Save</button>
+            <button type="reset" class="btn btn-danger">Cancel</button>
+        </form>
+        
+    </div>
+</body>
+<script>
+    // Function to calculate and update the total sums
+    function updateTotalSums() {
+        // Initialize total variables
+        let totalStrength = 0;
+        let totalEmpWages = 0;
+        let totalTotalWages = 0;
+        let totalEPFWages = 0;
+        let totalESIWages = 0;
+        let totalEPF = 0;
+        let totalESI = 0;
+
+        // Iterate through table rows
+        document.querySelectorAll('tbody tr').forEach(function (row) {
+            // Parse row data
+            const strength = parseFloat(row.querySelector('td:nth-child(3)').textContent) || 0;
+            const empWages = parseFloat(row.querySelector('td:nth-child(4)').textContent) || 0;
+            const totalWages = parseFloat(row.querySelector('td:nth-child(5)').textContent) || 0;
+            const epfWages = parseFloat(row.querySelector('td:nth-child(6)').textContent) || 0;
+            const esiWages = parseFloat(row.querySelector('td:nth-child(7)').textContent) || 0;
+            const epf = parseFloat(row.querySelector('td:nth-child(8)').textContent) || 0;
+            const esi = parseFloat(row.querySelector('td:nth-child(9)').textContent) || 0;
+
+            // Update total variables
+            totalStrength += strength;
+            totalEmpWages += empWages;
+            totalTotalWages += totalWages;
+            totalEPFWages += epfWages;
+            totalESIWages += esiWages;
+            totalEPF += epf;
+            totalESI += esi;
+        });
+
+        // Update the total values in the table footer
+        document.getElementById('total_Strength').textContent = totalStrength.toFixed(0);
+        document.getElementById('total_EmpWages').textContent = totalEmpWages.toFixed(0);
+        document.getElementById('total_TotalWages').textContent = totalTotalWages.toFixed(0);
+        document.getElementById('total_EPFWages').textContent = totalEPFWages.toFixed(0);
+        document.getElementById('total_ESIWages').textContent = totalESIWages.toFixed(0);
+        document.getElementById('total_EPF').textContent = totalEPF.toFixed(0);
+        document.getElementById('total_ESI').textContent = totalESI.toFixed(0);
+    }
+
+    // Calculate and update total sums when the page loads
+    updateTotalSums();
+
+    // Calculate and update total sums when input values change
+    document.querySelectorAll('tbody tr td:nth-child(3), tbody tr td:nth-child(4), tbody tr td:nth-child(5), tbody tr td:nth-child(6), tbody tr td:nth-child(7), tbody tr td:nth-child(8), tbody tr td:nth-child(9)').forEach(function (cell) {
+        cell.addEventListener('input', function () {
+            updateTotalSums();
+        });
+    });
+</script>
+
+<script>
+    const totalBillingInput = document.getElementById('totalBilling');
+
+    const bonusYesRadio1 = document.getElementById('bonusYes1');
+    const bonusNoRadio1 = document.getElementById('bonusNo1');
+    const bonusAmountInput1 = document.getElementById('bonusAmount1');
+
+    const bonusYesRadio2 = document.getElementById('bonusYes2');
+    const bonusNoRadio2 = document.getElementById('bonusNo2');
+    const bonusAmountInput2 = document.getElementById('bonusAmount2');
+
+    const bonusYesRadio3 = document.getElementById('bonusYes3');
+    const bonusNoRadio3 = document.getElementById('bonusNo3');
+    const bonusAmountInput3 = document.getElementById('bonusAmount3');
+
+    function calculateBonus1() {
+        if (bonusYesRadio1.checked) {
+            const bonusAmount = ((totalBillingInput.value * 8.33) / 100 ).toFixed(2); // Display up to 2 digits after the decimal point
+            bonusAmountInput1.value = bonusAmount; // No need to padStart
+            bonusAmountInput1.setAttribute('readonly', 'readonly');
+        } else {
+            bonusAmountInput1.value = '0.00'; // Display 2 digits after the decimal point
+            bonusAmountInput1.setAttribute('readonly', 'readonly');
+        }
+    }
+
+    function calculateBonus2() {
+        if (bonusYesRadio2.checked) {
+            const bonusAmount = ((totalBillingInput.value * 5.25) / 100 ).toFixed(2); 
+            bonusAmountInput2.value = bonusAmount; // No need to padStart
+            bonusAmountInput2.setAttribute('readonly', 'readonly');
+        } else {
+            bonusAmountInput2.value = '0.00'; // Display 2 digits after the decimal point
+            bonusAmountInput2.setAttribute('readonly', 'readonly');
+        }
+    }
+
+    function calculateBonus3() {
+        if (bonusYesRadio3.checked) {
+            const bonusAmount = ((totalBillingInput.value * 3.67) / 100).toFixed(2); 
+            bonusAmountInput3.value = bonusAmount; // No need to padStart
+            bonusAmountInput3.setAttribute('readonly', 'readonly');
+        } else {
+            bonusAmountInput3.value = '0.00'; // Display 2 digits after the decimal point
+            bonusAmountInput3.setAttribute('readonly', 'readonly');
+        }
+    }
+
+    // Initial calculation and disabling
+    calculateBonus1();
+    calculateBonus2();
+    calculateBonus3();
+
+    // Event listeners
+    totalBillingInput.addEventListener('input', function () {
+        calculateBonus1();
+        calculateBonus2();
+        calculateBonus3();
+    });
+
+    bonusYesRadio1.addEventListener('change', calculateBonus1);
+    bonusNoRadio1.addEventListener('change', calculateBonus1);
+    bonusYesRadio2.addEventListener('change', calculateBonus2);
+    bonusNoRadio2.addEventListener('change', calculateBonus2);
+    bonusYesRadio3.addEventListener('change', calculateBonus3);
+    bonusNoRadio3.addEventListener('change', calculateBonus3);
+</script>
+
+<script>
+    // Function to calculate and update the fields
+    function calculateWages() {
+        const strength = parseFloat(document.getElementById('strength').value) || 0;
+        const empWages = parseFloat(document.getElementById('empWages').value) || 0;
+        const epfYes = document.getElementById('epfYes').checked;
+        const esiYes = document.getElementById('esiYes').checked;
+
+        // Calculate Total Wages, EPF Wages, ESI Wages, EPF (13%), ESI (3.25%)
+        const totalWages = (strength * empWages).toFixed(0);
+        const epfWages = epfYes ? totalWages : 0;
+        const esiWages = esiYes ? totalWages : 0;
+        const epfAmount = epfYes ? (totalWages * 0.13).toFixed(0) : 0;
+        const esiAmount = esiYes ? (totalWages * 0.0325).toFixed(0) : 0;
+
+        // Update the disabled fields
+        document.getElementById('totalWages').value = totalWages;
+        document.getElementById('epfWages').value = epfWages;
+        document.getElementById('esiWages').value = esiWages;
+        document.getElementById('epfAmount').value = epfAmount;
+        document.getElementById('esiAmount').value = esiAmount;
+    }
+
+    // Add input event listeners to automatically calculate the fields
+    document.getElementById('strength').addEventListener('input', calculateWages);
+    document.getElementById('empWages').addEventListener('input', calculateWages);
+    document.getElementById('epfYes').addEventListener('change', calculateWages);
+    document.getElementById('epfNo').addEventListener('change', calculateWages);
+    document.getElementById('esiYes').addEventListener('change', calculateWages);
+    document.getElementById('esiNo').addEventListener('change', calculateWages);
+
+    // Initial calculation
+    calculateWages();
+</script>
+
+<script>
+    const totalStrengthInput = document.getElementById('totalStrength');
+    const totalBillingInput1 = document.getElementById('totalBilling');
+    const serviceChargeTypeSelect = document.getElementById('serviceChargeType');
+    const serviceChargeValueInput = document.getElementById('serviceChargeValue');
+    const totalServiceChargeInput = document.getElementById('totalServiceCharge');
+
+    function calculateServiceCharge() {
+        const totalStrength = parseFloat(totalStrengthInput.value);
+        const totalBilling = parseFloat(totalBillingInput1.value);
+        const serviceChargeType = serviceChargeTypeSelect.value;
+        const serviceChargeValue = parseFloat(serviceChargeValueInput.value);
+
+        if (!isNaN(totalStrength) && !isNaN(serviceChargeValue)) {
+            let totalServiceCharge = 0;
+
+            if (serviceChargeType === 'Per Head') {
+                totalServiceCharge = totalStrength * serviceChargeValue;
+            } else if (serviceChargeType === 'Wages Percentage') {
+                totalServiceCharge = totalBilling * (serviceChargeValue / 100);
+            }
+
+            totalServiceChargeInput.value = totalServiceCharge.toFixed(0);
+        } else {
+            totalServiceChargeInput.value = '';
+        }
+    }
+
+    // Add input event listeners to automatically calculate the service charge
+    totalStrengthInput.addEventListener('input', calculateServiceCharge);
+    totalBillingInput1.addEventListener('input', calculateServiceCharge);
+    serviceChargeTypeSelect.addEventListener('change', calculateServiceCharge);
+    serviceChargeValueInput.addEventListener('input', calculateServiceCharge);
+</script>
+
+<script>
+    // Function to fetch and update total strength
+    function updateTotalStrength() {
+        let totalStrength = 0;
+
+        // Iterate through table rows and sum up the strength column
+        document.querySelectorAll('tbody tr').forEach(function (row) {
+            const strength = parseFloat(row.querySelector('td:nth-child(3)').textContent) || 0;
+            totalStrength += strength;
+        });
+
+        // Update the totalStrength input field
+        document.getElementById('totalStrength').value = totalStrength.toFixed(0);
+    }
+
+    // Function to fetch and update total billing wages
+    function updateTotalBilling() {
+        let totalBilling = 0;
+
+        // Iterate through table rows and sum up the billing wages column
+        document.querySelectorAll('tbody tr').forEach(function (row) {
+            const billingWages = parseFloat(row.querySelector('td:nth-child(5)').textContent) || 0;
+            totalBilling += billingWages;
+        });
+
+        // Update the totalBilling input field
+        document.getElementById('totalBilling').value = totalBilling.toFixed(0);
+    }
+
+    // Function to fetch and update EPF and ESI
+    function updateEPFandESI() {
+        let totalEPF = 0;
+        let totalESI = 0;
+
+        // Iterate through table rows and sum up the EPF and ESI columns
+        document.querySelectorAll('tbody tr').forEach(function (row) {
+            const epf = parseFloat(row.querySelector('td:nth-child(8)').textContent) || 0;
+            const esi = parseFloat(row.querySelector('td:nth-child(9)').textContent) || 0;
+            totalEPF += epf;
+            totalESI += esi;
+        });
+
+        // Update the EPF and ESI input fields
+        document.getElementById('epf').value = totalEPF.toFixed(0); // Replace 'epf' with the actual ID of your EPF input field
+        document.getElementById('esi').value = totalESI.toFixed(0); // Replace 'esi' with the actual ID of your ESI input field
+    }
+
+    // Fetch and update EPF and ESI when the page loads
+    window.addEventListener('load', function () {
+        updateEPFandESI();
+    });
+
+    // Fetch and update EPF and ESI when input values change
+    document.querySelectorAll('tbody tr td:nth-child(8), tbody tr td:nth-child(9)').forEach(function (cell) {
+        cell.addEventListener('input', function () {
+            updateEPFandESI();
+        });
+    });
+
+
+
+    // Fetch and update total strength when the page loads
+    window.addEventListener('load', function () {
+        updateTotalStrength();
+    });
+
+    // Fetch and update total billing wages when the page loads
+    window.addEventListener('load', function () {
+        updateTotalBilling();
+    });
+
+    // Fetch and update EPF when the page loads
+    window.addEventListener('load', function () {
+        updateEPF();
+    });
+
+    // Fetch and update ESI when the page loads
+    window.addEventListener('load', function () {
+        updateESI();
+    });
+</script>
+
+<script>
+    // Function to calculate and update GST total amount
+    function calculateGSTTotalAmount() {
+        const totalBilling = parseFloat(document.getElementById('totalBilling').value) || 0;
+        const epf = parseFloat(document.getElementById('epf').value) || 0;
+        const esi = parseFloat(document.getElementById('esi').value) || 0;
+        const totalServiceCharge = parseFloat(document.getElementById('totalServiceCharge').value) || 0;
+        const gstPercentage = parseFloat(document.getElementById('gstPercentage').value) || 0;
+
+        // Calculate the GST total amount
+        const gstTotalAmount = (totalBilling + epf + esi + totalServiceCharge) * (gstPercentage / 100);
+
+        // Update the GST total amount input field
+        document.getElementById('gstTotalAmount').value = gstTotalAmount.toFixed(0);
+    }
+
+    
+    // Add input event listeners to automatically calculate GST total amount
+    document.getElementById('totalBilling').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('epf').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('esi').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('totalServiceCharge').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('gstPercentage').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('serviceChargeType').addEventListener('change', calculateGSTTotalAmount);
+</script>
+
+<script>
+    // Function to calculate and update GST total amount
+    function calculateGSTTotalAmount() {
+        const totalBilling = parseFloat(document.getElementById('totalBilling').value) || 0;
+        const epf = parseFloat(document.getElementById('epf').value) || 0;
+        const esi = parseFloat(document.getElementById('esi').value) || 0;
+        const totalServiceCharge = parseFloat(document.getElementById('totalServiceCharge').value) || 0;
+        const bonusAmountInput1 = parseFloat(document.getElementById('bonusAmount1').value) || 0;
+        const bonusAmountInput2 = parseFloat(document.getElementById('bonusAmount2').value) || 0;
+        const bonusAmountInput3 = parseFloat(document.getElementById('bonusAmount3').value) || 0;
+        const materialCharges = parseFloat(document.getElementById('materialCharges').value) || 0;
+        const fuelCharges = parseFloat(document.getElementById('fuelCharges').value) || 0;
+        const machineryCharges = parseFloat(document.getElementById('machineryCharges').value) || 0;
+        const others = parseFloat(document.getElementById('others').value) || 0;
+        const gstPercentage = parseFloat(document.getElementById('gstPercentage').value) || 0;
+
+        // Calculate the GST total amount
+        const gstTotalAmount = (totalBilling + epf + esi + totalServiceCharge + bonusAmountInput1 + bonusAmountInput2 + bonusAmountInput3 + materialCharges + fuelCharges + machineryCharges + others) * (gstPercentage / 100);
+
+        // Update the GST total amount input field
+        document.getElementById('gstTotalAmount').value = gstTotalAmount.toFixed(0);
+
+        // Calculate the Total Estimate Amount
+        const totalEstimateAmount = totalBilling + epf + esi + totalServiceCharge + bonusAmountInput1 + bonusAmountInput2 + bonusAmountInput3 + materialCharges + fuelCharges + machineryCharges + others + gstTotalAmount;
+
+        // Update the Total Estimate Amount input field
+        document.getElementById('totalEstimateAmount').value = totalEstimateAmount.toFixed(0);
+    }
+
+    // Add input event listeners to automatically calculate GST total amount
+    document.getElementById('totalBilling').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('epf').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('esi').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('totalServiceCharge').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('bonusAmount1').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('bonusAmount2').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('bonusAmount3').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('materialCharges').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('fuelCharges').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('machineryCharges').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('others').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('gstPercentage').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('totalBilling').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('epf').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('esi').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('totalServiceCharge').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('gstPercentage').addEventListener('input', calculateGSTTotalAmount);
+    document.getElementById('serviceChargeType').addEventListener('change', calculateGSTTotalAmount);
+</script>
+
+</html>
+{% endblock content %}

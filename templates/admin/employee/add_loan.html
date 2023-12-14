@@ -1,0 +1,300 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container fade-in custom-border">
+        <form action="" method="post" id="loan_details"> 
+            {% csrf_token %}
+            <!-- Client Details -->
+            <h3 class="text-center mb-4 text-primary">Loans and Advance Details</h3>
+            <hr>
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="employeeInput" class="form-label text-dark">Employee Code<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="employee_code" id="employeeInput" required>
+                    <div id="employee_code_suggestion" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                </div>
+                <script>
+                    const clientNameInput = document.getElementById("employeeInput");
+                    const clientSuggestions = document.getElementById("employee_code_suggestion");
+
+                    clientNameInput.addEventListener("input", function () {
+                        const keyword = this.value.trim();
+
+                        if (keyword) {
+                            fetch("{% url 'HRMS:search_employee' %}?keyword=" + keyword)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const clients = data.clients.slice(0, 10);
+                                    const suggestions = clients.map(client_name => `<div class="suggestion">${client_name}</div>`).join("");
+                                    clientSuggestions.innerHTML = suggestions;
+
+                                    // Handle click on a suggestion
+                                    const suggestionElements = document.querySelectorAll(".suggestion");
+                                    suggestionElements.forEach(suggestion => {
+                                        suggestion.addEventListener("click", function () {
+                                            clientNameInput.value = suggestion.textContent;
+                                            clientSuggestions.innerHTML = ""; // Clear suggestions
+                                        });
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error("An error occurred while fetching user suggestions:", error);
+                                });
+                        } else {
+                            clientSuggestions.innerHTML = "";
+                        }
+                    });
+
+                </script>
+                <div class="col-md-3 mb-3">
+                    <label for="clientField" class="form-label text-dark">Client<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="clientField" aria-describedby="" name="client_name" disabled>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="divisionField" class="form-label text-dark">Division<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="divisionField" aria-describedby="" name="division_name" disabled>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="designationField" class="form-label text-dark">Designation<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="designationField" aria-describedby="" name="desgination" disabled>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Department<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="departmentField" aria-describedby="clientCodeHelp" name="department" disabled>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Loan/Advance Amount<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="loanAmount" aria-describedby="clientCodeHelp" name="loanamount">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">No. Of Instalment<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="numInstallments" aria-describedby="clientCodeHelp" value="1" name="noinst">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="" class="form-label text-dark">Instalment Amount<span
+                            class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="installmentAmount" aria-describedby="clientCodeHelp" name="instamount" >
+                </div>
+            </div>
+            <script>
+                const loanAmountInput = document.getElementById("loanAmount");
+                const numInstallmentsInput = document.getElementById("numInstallments");
+                const installmentAmountInput = document.getElementById("installmentAmount");
+            
+                function updateInstallmentAmount() {
+                    const loanAmount = parseFloat(loanAmountInput.value) || 0; // Parse loanAmount as a float or default to 0
+                    const numInstallments = parseInt(numInstallmentsInput.value) || 1; // Parse numInstallments as an integer or default to 1
+            
+                    const calculatedInstallmentAmount = loanAmount / numInstallments;
+            
+                    if (!isNaN(calculatedInstallmentAmount)) {
+                        installmentAmountInput.value = calculatedInstallmentAmount.toFixed(2); // Set the installmentAmount with 2 decimal places
+                    } else {
+                        installmentAmountInput.value = "";
+                    }
+                }
+            
+                // Add event listeners to both loanAmount and numInstallments fields
+                loanAmountInput.addEventListener("input", updateInstallmentAmount);
+                numInstallmentsInput.addEventListener("input", updateInstallmentAmount);
+            </script>
+            
+            <script>
+                const employeeInput = document.getElementById("employeeInput");
+                const employeeSuggestions = document.getElementById("employee_code_suggestion");
+                const clientField = document.getElementById("clientField");
+                const divisionField = document.getElementById("divisionField");
+                const designationField = document.getElementById("designationField");
+                const departmentField = document.getElementById("departmentField");
+            
+                // Function to fetch and display employee details
+                function getEmployeeDetails(empcode) {
+                    fetch("{% url 'HRMS:get_employee_details' %}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": "{{ csrf_token }}",
+                        },
+                        body: "employee_code=" + empcode,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            // Handle case where no matching employee is found
+                            clearFields();
+                        } else {
+                            // Update form fields with employee details
+                            clientField.value = data.client;
+                            divisionField.value = data.division;
+                            designationField.value = data.desgination;
+                            departmentField.value = data.department;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("An error occurred while fetching employee details:", error);
+                    });
+                }
+            
+                // Function to clear form fields
+                function clearFields() {
+                    clientField.value = "";
+                    divisionField.value = "";
+                    designationField.value = "";
+                    departmentField.value = "";
+                }
+            
+                employeeInput.addEventListener("input", function () {
+                    const keyword = this.value.trim();
+            
+                    if (keyword) {
+                        fetch("{% url 'HRMS:search_employee' %}?keyword=" + keyword)
+                            .then(response => response.json())
+                            .then(data => {
+                                const employees = data.clients.slice(0, 10);
+                                const suggestions = employees.map(employee_code => `<div class="suggestion">${employee_code}</div>`).join("");
+                                employeeSuggestions.innerHTML = suggestions;
+            
+                                // Handle click on an employee code suggestion
+                                const suggestionElements = document.querySelectorAll(".suggestion");
+                                suggestionElements.forEach(suggestion => {
+                                    suggestion.addEventListener("click", function () {
+                                        employeeInput.value = suggestion.textContent;
+                                        employeeSuggestions.innerHTML = ""; // Clear suggestions
+                                        getEmployeeDetails(suggestion.textContent); // Fetch and display employee details
+                                    });
+                                });
+                            })
+                            .catch(error => {
+                                console.error("An error occurred while fetching employee suggestions:", error);
+                            });
+                    } else {
+                        employeeSuggestions.innerHTML = "";
+                        clearFields(); // Clear form fields when the input is empty
+                    }
+                });
+            </script>
+            
+            
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <label for="clientcode" class="form-label text-dark">Start Month<span
+                            class="text-danger">*</span></label>
+                    <select class="form-select" id="monthSelect" name="selected_month">
+                        <option value="" disabled selected>Select a month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="clientcode" class="form-label text-dark">Start Year<span
+                            class="text-danger">*</span></label>
+                    <select class="form-select" id="" name="selected_year">
+                        <option selected disabled>Select a year</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+                <!-- <div class="col-md-5 mb-3">
+                    <label for="clientcode" class="form-label text-dark">Loan/Advance Application Copy&nbsp;(In PDF
+                        Only)<span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" id="" aria-describedby="clientCodeHelp" accept=".pdf"
+                        required>
+                </div> -->
+            </div>
+
+            <button type="submit" class="btn btn-success me-md-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-send"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+                </svg>
+                Save
+            </button>
+            <button type="button" class="btn btn-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" class="bi bi-x"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+                Cancel
+            </button>
+        </form>
+    </div>
+
+</body>
+<script>
+    $(document).ready(function() {
+        // Function to handle form submission
+        $("#loan_details").submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            // Serialize form data
+            var formData = $(this).serialize() + '&csrfmiddlewaretoken=' + $('input[name=csrfmiddlewaretoken]').val();
+            var endpointUrl = "{% url 'HRMS:add_loan' %}";
+    
+            // Send an AJAX POST request to your server
+            $.ajax({
+                type: "POST",
+                url: endpointUrl,
+                data: formData,
+                success: function(response) {
+                    // Handle the response from the server
+                    if (response.success) {
+                        // Show a success message with SweetAlert
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(function() {
+                            // Reload the current page after success
+                            location.reload();
+                        });                            
+                    } else {
+                        // Show an error message with SweetAlert
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                error: function() {
+                    // Show an error message with SweetAlert
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Loan Enter failed due to a server error. Please try again later.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    });        
+</script>
+</html>
+{% endblock content %}

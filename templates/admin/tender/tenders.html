@@ -1,0 +1,51 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+
+
+<div class="row row-sm mt-5">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Tenders Details</h3>
+                <a href="{% url 'HRMS:add_new_tender' %}">Add New Tender</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable" >
+                        <thead>
+                            <tr>
+                                <th style="font-size: 10PX;">Sl No</th>
+                                <th style="font-size: 10PX;">Tender Name</th>
+                                <th style="font-size: 10PX;">Publish Date</th>
+                                <th style="font-size: 10PX;">Expire Date</th>
+                                <th style="font-size: 10PX;">Prepare User</th>
+                                <th style="font-size: 10PX;">Monitor User</th>
+                                <th style="font-size: 10PX;">Advertise Copy</th>
+                                <th style="font-size: 10PX;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 9PX;">
+                            {% for tender in tenders %}
+                              
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{tender.tendername}}</td>
+                                    <td>{{tender.publishdate}}</td>
+                                    <td>{{tender.expiredate}}</td>
+                                    <td>{{tender.prepareuserid}}</td>
+                                    <td>{{tender.moniteruserid}}</td>
+                                    <td>View</td>
+                                    <td>Edit</td>
+                                    
+                                </tr>
+                            {% endfor %}    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

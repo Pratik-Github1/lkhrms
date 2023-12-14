@@ -1,0 +1,159 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Review Report</title>
+
+    <!-- Js For dob -->
+    <script src="/employee/js/dob.js"></script>
+
+    <!-- SweetAlert library cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+        }
+
+        /* Add border to the container */
+        .custom-border {
+            border: 1px solid #ccc;
+            padding: 20px;
+            /* Add some padding for better appearance */
+            border-radius: 8px;
+        }
+
+        .table {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5 fade-in custom-border">
+        <form action="">
+            <h3 class="text-center mb-4 text-primary">Monthly Review Report</h3>
+            <hr>
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <label for="" class="form-label text-dark">Month<span class="text-danger">*</span></label>
+                    <select class="form-select" id="" name="">
+                        <option value="" disabled selected>Select a month</option>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="" class="form-label text-dark">Year<span class="text-danger">*</span></label>
+                    <select class="form-select" id="" name="">
+                        <option value="" disabled selected>Select a Year</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary btn-md" style="margin-top: 33px;">View</button>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary btn-md" style="margin-top: 33px;margin-left: -261px;">Download
+                        Excel</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" style="width: 98%; margin: auto;">
+                    <thead>
+                        <tr>
+                            <th colspan="19" class="text-center" style="background-color: #e8e8e8;">Client Division Wise
+                                Status List,-Month-Year <strong>2023-February</strong></th>
+                        </tr>
+                        <tr>
+                            <th rowspan="2" style="background-color: #e8e8e8;">SN.</th>
+                            <th rowspan="2" class="text-center" style="background-color: #e8e8e8;">Client Name</th>
+                            <th rowspan="2" class="text-center" style="background-color: #e8e8e8;">Divisions</th>
+                            <th colspan="4" class="text-center" style="background-color: #b6eadd;">Attendance</th>
+                            <th colspan="4" class="text-center" style="background-color: #e7e2bf;">Salary</th>
+                            <th colspan="4" class="text-center" style="background-color: #cdcce9;">EPF</th>
+                            <th colspan="4" class="text-center" style="background-color: #e0c4c4;">ESI</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center" style="background-color: #b6eadd;">Submitted</th>
+                            <th class="text-center" style="background-color: #b6eadd;">Pending</th>
+                            <th class="text-center" style="background-color: #b6eadd;">Approved</th>
+                            <th class="text-center" style="background-color: #b6eadd;">Pending</th>
+                            <th class="text-center" style="background-color: rgb(231,226,191);">Submitted</th>
+                            <th class="text-center" style="background-color: rgb(231,226,191);">Pending</th>
+                            <th class="text-center" style="background-color: rgb(231,226,191);">Approved</th>
+                            <th class="text-center" style="background-color: rgb(231,226,191);">Pending</th>
+                            <th class="text-center" style="background-color: #cdcce9;">Submitted</th>
+                            <th class="text-center" style="background-color: #cdcce9;">Pending</th>
+                            <th class="text-center" style="background-color: #cdcce9;">Approved</th>
+                            <th class="text-center" style="background-color: #cdcce9;">Pending</th>
+                            <th class="text-center" style="background-color: #e0c4c4;">Submitted</th>
+                            <th class="text-center" style="background-color: #e0c4c4;">Pending</th>
+                            <th class="text-center" style="background-color: #e0c4c4;">Approved</th>
+                            <th class="text-center" style="background-color: #e0c4c4;">Pending</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <!-- Add more rows here -->
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    <script>
+        // Add the "active" class to trigger the fade-in animation when the document is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container.fade-in');
+            container.classList.add('active');
+        });
+    </script>
+
+   
+
+
+</body>
+
+</html>
+{% endblock content %}

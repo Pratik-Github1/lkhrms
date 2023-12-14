@@ -1,0 +1,281 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- SweetAlert2 JS and CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.2.7/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.2.7/dist/sweetalert2.min.css">
+
+    
+</head>
+<style>
+    #ClientCard {
+        font-size: 12px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    #stateSelect,
+    #districtSelect,
+    input[type="number"] {
+        width: 180px;
+        /* Adjust the width as needed */
+        height: 35px;
+        /* Adjust the height as needed */
+        font-size: 14px;
+        /* Adjust the font size as needed */
+    }
+
+    #contactRemark,
+    #contactDesign,
+    #contactEmail,
+    #contactMob,
+    #contactName {
+        width: 140px;
+        height: 35px;
+        font-size: 12px;
+        margin-top: 2px;
+    }
+</style>
+
+<body>
+    <form method="post" id="client_details">
+        <div class="card shadow" id="ClientCard">
+            <div class="card-header mt-1">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6>Update Client Details</h6>
+                    <a href="{% url 'HRMS:client_lists' %}">Back</a>
+                </div>
+            </div>
+            <div class="card-body cardd">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="client_name" class="form-label text-dark">Client Name<span class="text-danger">*</span></label>
+                        <input type="text" name="client_name" class="form-control" id="client_name" aria-describedby="" value="{{ client.cname }}" >
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="client_short_name" class="form-label text-dark">Client Short Name<span class="text-danger">*</span></label>
+                        <input type="text" name="client_short_name" class="form-control" id="client_short_name" aria-describedby="" value="{{ client.csname }}" >
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="client_client_email" class="form-label text-dark">Client Email Id<span class="text-danger">*</span></label>
+                        <input type="email" name="client_client_email" class="form-control" id="client_client_email" aria-describedby="" value="{{ client.email }}" >
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="client_office_phone" class="form-label text-dark">Office Phone<span class="text-danger">*</span></label>
+                        <input type="text" name="client_office_phone" class="form-control" id="client_office_phone" aria-describedby="" value="{{ client.oficeph }}" >
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Select State<span class="text-danger">*</span></label>
+                        <input type="text" name="client_state" class="form-control" aria-describedby="" value="{{ client.state }}">
+
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">District<span class="text-danger">*</span></label>
+                        <input type="text" name="client_district" class="form-control" aria-describedby="" value="{{ client.district }}">
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="client_pincode" class="form-label text-dark">PIN Code<span class="text-danger">*</span></label>
+                        <input type="text" name="client_pincode" class="form-control" id="client_pincode" aria-describedby="clientCodeHelp"  value="{{ client.pin }}">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="client_start_date" class="form-label text-dark">Start Date<span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="client_start_date" name="client_start_date" aria-describedby="clientCodeHelp"  value="{{ client.startdate|date:'Y-m-d' }}">
+                    </div>
+        
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Work Contract No.<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="client_work_contract_no" class="form-control" id=""
+                            aria-describedby="clientCodeHelp" value="{{ client.contractno }}">
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Contract Value<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="client_Contract_Value" class="form-control" id=""
+                            aria-describedby="clientCodeHelp" value="{{ client.contractvalue }}">
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">GST No.<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" name="client_GST_No"
+                            aria-describedby="clientCodeHelp" value="{{ client.gstno }}">
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">End Date<span
+                                class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="end_date" name="client_end_date"
+                            aria-describedby="clientCodeHelp" value="{{ client.enddate|date:'Y-m-d' }}">
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Address<span class="text-danger">*</span></label>
+                        <textarea name="client_address" class="form-control" id="" rows="1">{{ client.address }}</textarea>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label text-dark">Bonus<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_Bonus" value="1" {% if client.bonus == '1' %}checked{% endif %}>
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_Bonus" value="0" {% if client.bonus == '0' %}checked{% endif %}>
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label text-dark">EPF<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_EPF" value="1" {% if client.epf == '1' %}checked{% endif %}>
+                            <label class="form-check-label" for="Yes">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_EPF" value="0" {% if client.epf == '0' %}checked{% endif %}>
+                            <label class="form-check-label" for="No">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label text-dark">ESI<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_ESI" value="1" {% if client.esi == '1' %}checked{% endif %}>
+                            <label class="form-check-label" for="Yes">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_ESI" value="0" {% if client.esi == '0' %}checked{% endif %}>
+                            <label class="form-check-label" for="No">No</label>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <h5 class="text-primary text-center">Contact Person Details</h4>
+                        <hr>
+                        <div class="col-md-2 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Name<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" id="contactName" value={{ client.contactperson }}>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Mobile No.<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="mobile_number" class="form-control" id="contactMob"
+                                aria-describedby="clientCodeHelp" value={{ client.contactmobileno }}>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Email Id<span
+                                    class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" id="contactEmail" value={{ client.contactemail }}>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Desigination<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="designation" class="form-control" id="contactDesign"
+                                aria-describedby="clientCodeHelp" value={{ client.contactdesg }}>
+                        </div>
+                        
+                        <div class="col-md-2 text-center mt-4">
+                            <button type="submit" class="btn btn-sm btn-success me-md-2">Update</button>
+                        </div>
+                </div>
+            </div>
+    </form>
+    </div>
+</body>
+
+<!-- Include SweetAlert2 JS and CSS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.2.7/dist/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.2.7/dist/sweetalert2.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Function to handle form submission
+        $("#client_details").submit(function (event) {
+            event.preventDefault(); 
+
+            // Serialize form data
+            var formData = $(this).serialize() + '&csrfmiddlewaretoken=' + $('input[name=csrfmiddlewaretoken]').val();
+            var endpointUrl = "{% url 'HRMS:editt_client_Function' client_id=client.cid %}";
+            
+            $.ajax({
+                type: "POST",
+                url: endpointUrl,
+                data: formData,
+                success: function (response) {
+                    // Handle the response from the server
+                    if (response.success) {
+                        // Show a success message with SweetAlert
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(function () {
+                            // Reload the current page after success
+                            location.reload();
+                        });
+                    } else {
+                        if (response.message === 'A client with the same name already exists.') {
+                            // Show a specific error message for duplicate client name
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            // Show a generic error message for other cases
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An error occurred. ' + response.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+                },
+                error: function (xhr, textStatus, error) {
+                    // Show an error message with SweetAlert for AJAX error
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred: ' + error,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+
+</html>
+
+{% endblock content %}

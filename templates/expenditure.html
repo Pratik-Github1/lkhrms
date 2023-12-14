@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expenditure Table</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h1>Expenditure Table</h1>
+    <div class="form-inline mb-3">
+        <label for="monthSelect" class="mr-2">Select Month:</label>
+        <select id="monthSelect" class="form-control">
+            <option value="All">All</option>
+            {% for month in distinct_months %}
+                <option value="{{ month }}">{{ month }}</option>
+            {% endfor %}
+        </select>
+        <label for="yearSelect" class="mx-2">Select Year:</label>
+        <select id="yearSelect" class="form-control">
+            <option value="All">All</option>
+            {% for year in distinct_years %}
+                <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
+        
+        <button id="searchButton" class="btn btn-primary ml-2">Search</button>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th colspan="11">
+                    <span id="tableHeader">Expenditure Data</span>
+                </th>
+            </tr>
+            <tr>
+                <th>SN</th>
+                <th>CLIENT NAME</th>
+                <th>DIVISION</th>
+                <th>MONTH</th>
+                <th>YEAR</th>
+                <th>MATERIAL</th>
+                <th>FUEL</th>
+                <th>OPERATIONAL</th>
+                <th>OTHERS</th>
+                <th>TOUR &amp; TRAVEL</th>
+                <th>TOTAL EXPENDITURE</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Data will be populated here when the page loads -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5">Total</td>
+                <td id="total-material">0</td>
+                <td id="total-fuel">0</td>
+                <td id="total-operational">0</td>
+                <td id="total-others">0</td>
+                <td id="total-tour-travel">0</td>
+                <td id="total-expenditure-footer">0</td>
+            </tr>
+        </tfoot>
+    </table>
+    <button id="downloadButton" class="btn btn-success">Download Excel</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+<script>
+    // Function to populate the table with data
+    function populateTableWithData(data) {
+        // Clear the table body
+        $("#tableBody").empty();
+
+        // Populate the table with the provided data
+        data.forEach(function(item) {
+            var totalExpenditure = item.MATERIAL + item.FUEL + item.OPERATIONAL + item.OTHERS + item.TOUR_TRAVEL;
+            $("#tableBody").append(`
+                <tr>
+                    <td>${item.SN}</td>
+                    <td>${item.CLIENT_NAME}</td>
+                    <td>${item.DIVISION}</td>
+                    <td>${item.MONTH}</td>
+                    <td>${item.YEAR}</td>
+                    <td>${item.MATERIAL}</td>
+                    <td>${item.FUEL}</td>
+                    <td>${item.OPERATIONAL}</td>
+                    <td>${item.OTHERS}</td>
+                    <td>${item.TOUR_TRAVEL}</td>
+                    <td class="total-expenditure">${totalExpenditure}</td>
+                </tr>
+            `);
+        });
+
+        // Calculate and update the footer totals
+        updateFooterTotals();
+    }
+
+    // Function to calculate and update the footer totals
+    function updateFooterTotals() {
+        var totalMaterial = 0;
+        var totalFuel = 0;
+        var totalOperational = 0;
+        var totalOthers = 0;
+        var totalTourTravel = 0;
+        var totalExpenditureFooter = 0;
+
+        $("#tableBody tr").each(function() {
+            totalMaterial += parseInt($(this).find("td:eq(5)").text());
+            totalFuel += parseInt($(this).find("td:eq(6)").text());
+            totalOperational += parseInt($(this).find("td:eq(7)").text());
+            totalOthers += parseInt($(this).find("td:eq(8)").text());
+            totalTourTravel += parseInt($(this).find("td:eq(9)").text());
+            totalExpenditureFooter += parseInt($(this).find("td:eq(10)").text());
+        });
+
+        $("#total-material").text(totalMaterial);
+        $("#total-fuel").text(totalFuel);
+        $("#total-operational").text(totalOperational);
+        $("#total-others").text(totalOthers);
+        $("#total-tour-travel").text(totalTourTravel);
+        $("#total-expenditure-footer").text(totalExpenditureFooter);
+    }
+
+    // Function to update the table based on selected month and year
+    function updateTable() {
+        var selectedMonth = $("#monthSelect").val();
+        var selectedYear = $("#yearSelect").val();
+
+        // Filter data based on selected month and year or show all data if "All" is selected
+        var filteredData = data;
+        if (selectedMonth !== "All") {
+            filteredData = filteredData.filter(function(item) {
+                return item.MONTH === selectedMonth;
+            });
+        }
+        if (selectedYear !== "All") {
+            filteredData = filteredData.filter(function(item) {
+                return item.YEAR == selectedYear;
+            });
+        }
+
+        // Populate the table with filtered data
+        populateTableWithData(filteredData);
+
+        // Update the table header based on the selected month and year
+        var tableHeader = "Expenditure Data";
+        if (selectedMonth !== "All") {
+            tableHeader = selectedMonth;
+        }
+        if (selectedYear !== "All") {
+            tableHeader += " - " + selectedYear;
+        }
+        $("#tableHeader").text(tableHeader);
+    }
+
+    // Search button click event
+    $("#searchButton").click(function() {
+        updateTable();
+    });
+
+    // Initial table population
+    populateTableWithData(data);
+
+    // Download button click event
+    $("#downloadButton").click(function() {
+        var selectedMonth = $("#monthSelect").val();
+        var selectedYear = $("#yearSelect").val();
+
+        // Create a filename based on the selected month and year
+        var filename = selectedMonth !== "All" ? selectedMonth : "All";
+        filename += selectedYear !== "All" ? "-" + selectedYear : "";
+
+        var filteredData = [];
+        $("#tableBody tr").each(function() {
+            var rowData = [];
+            $(this).find("td").each(function() {
+                rowData.push($(this).text());
+            });
+            filteredData.push(rowData);
+        });
+
+        var ws = XLSX.utils.aoa_to_sheet([[
+            "SN", "CLIENT NAME", "DIVISION", "MONTH", "YEAR", "MATERIAL", "FUEL", "OPERATIONAL", "OTHERS", "TOUR & TRAVEL", "TOTAL EXPENDITURE"
+        ]].concat(filteredData));
+
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, filename);
+        XLSX.writeFile(wb, filename + ".xlsx");
+    });
+</script>
+</body>
+</html>

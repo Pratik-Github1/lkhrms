@@ -1,0 +1,512 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include SweetAlert2 from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<style>
+    /* Style for the searchbox row */
+    #searchbox {
+        background-color: rgb(240, 234, 226);
+        padding: 10px;
+
+    }
+
+    /* Style for the input fields */
+    .form-control {
+        font-size: 14px;
+    }
+
+    /* Style for the buttons */
+    .btn-primary {
+        font-size: 12px;
+    }
+
+    #searchClientForm {
+        margin-top: 10px;
+    }
+
+    #example {
+        font-size: 11px;
+    }
+
+    #CardTable1 {
+        font-size: 14px;
+    }
+
+    #icons {
+        cursor: pointer;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .custom-button {
+        margin: 0; /* Reset margin to remove extra space */
+    }
+
+    .actionsa {
+        white-space: nowrap; /* Prevents wrapping to the next line */
+    }
+    
+    .actionsa a {
+        display: inline-block; /* Display elements in a row */
+        margin-right: 10px; /* Adjust the margin between icons */
+    }
+    
+    
+</style>
+
+<body>
+    <div class="row p-3 mb-3" id="searchbox">
+        <form method="post" id="searchMonthYearForm">
+            {% csrf_token %}
+            <div class="row w-100 ">
+                <div class="col-md-5 mb-3">
+                    <label for="clientcode" class="form-label text-dark">Client Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="client_input" name="client_name" placeholder="Enter Client Name" required>
+                    <div id="client_suggestions" class="p-1 rounded-2 mt-2" style="cursor: pointer;"></div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="" class="form-label text-dark">Division<span class="text-danger">*</span></label>
+                    <select name="sa" class="form-control" id="division_select">
+                        <option value="" selected disabled>Select Division</option>
+                    </select>
+                    <input type="hidden" id="division_name" name="division_name">
+    
+                </div>
+    
+                <script>
+                    const clientNameInput = document.getElementById("client_input");
+                    const clientSuggestions = document.getElementById("client_suggestions");
+                
+                    clientNameInput.addEventListener("input", function () {
+                        const keyword = this.value.trim();
+                
+                        if (keyword) {
+                            fetch("{% url 'HRMS:search_clients' %}?keyword=" + keyword)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const clients = data.clients;
+                                    const suggestions = clients.map(client => `<div class="suggestion">${client.ccode} - ${client.cname}</div>`).join("");
+                                    clientSuggestions.innerHTML = suggestions;
+                
+                                    // Handle click on a suggestion
+                                    const suggestionElements = document.querySelectorAll(".suggestion");
+                                    suggestionElements.forEach(suggestion => {
+                                        suggestion.addEventListener("click", function () {
+                                            clientNameInput.value = suggestion.textContent;
+                                            clientSuggestions.innerHTML = ""; // Clear suggestions
+                                        });
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error("An error occurred while fetching user suggestions:", error);
+                                });
+                        } else {
+                            clientSuggestions.innerHTML = "";
+                        }
+                    });
+                
+                    function fetchDivisions() {
+                        const clientName = clientNameInput.value;
+                        const divisionSelect = document.getElementById("division_select");
+                
+                        $.ajax({
+                            url: "{% url 'HRMS:fetch_divisions' %}",
+                            data: { client_name: clientName },
+                            dataType: "json",
+                            success: function (data) {
+                                divisionSelect.innerHTML = ""; // Clear previous options
+                                divisionSelect.options[divisionSelect.options.length] = new Option("Select Division", "");
+                
+                                data.divisions.forEach(function (division) {
+                                    // Include the division ID as a data attribute
+                                    divisionSelect.options[divisionSelect.options.length] = new Option(division.division, division.division);
+                                    divisionSelect.options[divisionSelect.options.length - 1].setAttribute("data-division-id", division.did);
+                                });
+                            },
+                            error: function (error) {
+                                console.error("An error occurred while fetching divisions:", error);
+                            }
+                        });
+                    }
+                
+                    // Handle click on a suggestion
+                    document.getElementById("client_suggestions").addEventListener("click", function (event) {
+                        if (event.target.classList.contains("suggestion")) {
+                            const clickedSuggestion = event.target.textContent;
+                            clientNameInput.value = clickedSuggestion;
+                            fetchDivisions(); // Fetch divisions when a suggestion is clicked
+                        }
+                    });
+                
+                    // Handle change in division select
+                    document.getElementById("division_select").addEventListener("change", function () {
+                        const selectedOption = this.options[this.selectedIndex];
+                        const selectedDivision = selectedOption.value;
+                        const selectedDivisionId = selectedOption.getAttribute("data-division-id");
+                
+                        document.getElementById("division_name").value = selectedDivision;
+                        document.getElementById("division_id").value = selectedDivisionId;
+                    });
+                </script>
+                
+                <input type="hidden" id="division_id" name="division_id">
+                
+                <div class="col-md-3 " style="margin-top: 33px;">
+                    <button type="submit" class="btn btn-sm btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <form method="GET" action="{% url 'HRMS:Approve_salary_function' %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <select class="form-control" id="selected_month" name="selected_month">
+                        <option selected disabled>---Select Month---</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <select class="form-control" id="selected_year" name="selected_year">
+                        <option value="" selected disabled>Select Year</option>
+                        
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        
+                    </select>
+                </div>
+
+                <div class="col-md-3 mb-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row row-sm mt-5">
+        <div class="col-lg-12">
+            <div class="card" style="font-size: 10px;">
+                <div class="card-header" style="display: flex; justify-content: space-between;">
+                    <h3 class="card-title">Attendance Details</h3>
+                    
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable" >
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 10px;">Sl No</th>
+                                    <th style="font-size: 10px;">Client Name</th>
+                                    <th style="font-size: 10px;">Division Name</th>
+                                    <th style="font-size: 10px;">Month Year</th>
+                                    <th style="font-size: 10px;">Total Employee</th>
+                                    <th style="font-size: 10px;">Total Salary</th>
+                                    <th style="font-size: 10px;">Action <br> View &nbsp; Approve &nbsp; Return</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 10px;">
+                                {% for i in attendance_records %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ i.cid.cname }}</td>
+                                    <td>{{ i.did.division }}</td>
+                                    <td>{{ i.attnyearmonth }}</td>
+                                    <td>{{ i.totalemp }}</td>
+                                    <td>{{ i.totalsalary }}</td>
+                                    <td class="actionsa d-flex">
+                                        <a class="view-icon mr-2" alt="view" title="view" id="icons">View</a>
+                                        {% if i.approvstatus %}
+                                            <span class="badge badge-success align-self-center text-dark">Approved</span>
+                                        {% else %}
+                                            <a class="approve-icon mr-2" alt="approve" title="approve" data-record-id="{{ i.sid }}" id="icons">Approve</a>
+                                        {% endif %}
+                                        {% if i.approvstatus %}
+                                            <a class="reject-icon mr-2" alt="reject" title="reject" data-record-id="{{ i.sid }}" id="icons">Reject</a>
+                                        {% else %}
+                                            <a class="delete-icon mr-2" alt="return" title="return" data-record-id="{{ i.sid }}" id="icons">Return</a>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow mt-2" id="CardTable1">
+        <div class="card-header p-3">
+            <strong>
+                Approve / Reject Salary Details
+            </strong>
+            <br><br>
+            <div class="row">
+                <div class="col-md-4">
+                    Total Assign Client - {{ total_clients }}
+                </div>
+                <div class="col-md-4">
+                    Approve Client - <strong style="color: green;">{{ approved_count }}</strong>
+                </div>
+                <div class="col-md-4">
+                    Pending Approval - <strong style="color: red;"> {{ pending_count }}</strong>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <!-- HTML table -->
+                <table id="example" class="table table-striped table-bordered">
+                    <!-- Table headers -->
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Client Name</th>
+                            <th>Division Name</th>
+                            <th>Month Year</th>
+                            <th>Total Employee</th>
+                            <th>Total Salary</th>
+                            <th>Action <br> View &nbsp; Approve &nbsp; Return</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in attendance_records %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ i.cid.cname }}</td>
+                            <td>{{ i.did.division }}</td>
+                            <td>{{ i.attnyearmonth }}</td>
+                            <td>{{ i.totalemp }}</td>
+                            <td>{{ i.totalsalary }}</td>
+                            <td class="actionsa d-flex">
+                                <a class="view-icon mr-2" alt="view" title="view" id="icons">View</a>
+                                {% if i.approvstatus %}
+                                    <span class="badge badge-success align-self-center text-dark">Approved</span>
+                                {% else %}
+                                    <a class="approve-icon mr-2" alt="approve" title="approve" data-record-id="{{ i.sid }}" id="icons">Approve</a>
+                                {% endif %}
+                                {% if i.approvstatus %}
+                                    <a class="reject-icon mr-2" alt="reject" title="reject" data-record-id="{{ i.sid }}" id="icons">Reject</a>
+                                {% else %}
+                                    <a class="delete-icon mr-2" alt="return" title="return" data-record-id="{{ i.sid }}" id="icons">Return</a>
+                                {% endif %}
+                            </td>
+                            
+                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <!-- Table footer -->
+                    <tfoot style="font-size: 10px;">
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Client Name</th>
+                            <th>Division Name</th>
+                            <th>Month Year</th>
+                            <th>Total Employee</th>
+                            <th>Total Attendance</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- Include SweetAlert2 from a CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(".approve-icon").click(function() {
+            const recordId = $(this).data("record-id");
+            
+            // Show a confirmation dialog
+            Swal.fire({
+                icon: 'question',
+                title: 'Confirm Approval',
+                text: 'Are you sure you want to approve this Salary?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, approve it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User confirmed, send the approval request
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'HRMS:approve_salary' %}",
+                        data: {
+                            record_id: recordId,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Success: Show a success alert
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Salary Approved',
+                                    text: 'The salary has been approved successfully!',
+                                }).then((result) => {
+                                    location.reload();
+                                });
+                            } else {
+                                // Error: Show an error alert
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An error occurred: ' + response.error_message,
+                                });
+                            }
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            // Handle errors
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred: ' + errorThrown,
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $(".delete-icon").click(function() {
+            const recordId = $(this).data("record-id");
+            
+            // Show a confirmation dialog
+            Swal.fire({
+                icon: 'warning',
+                title: 'Confirm Return',
+                text: 'Are you sure you want to return this record?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, return it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User confirmed, send the delete request
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'HRMS:return_salary' %}",  
+                        data: {
+                            record_id: recordId,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Success: Show a success alert
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Record Returned',
+                                    text: 'The record has been returned successfully!',
+                                }).then((result) => {
+                                    location.reload();
+                                });
+                            } else {
+                                // Error: Show an error alert
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An error occurred: ' + response.error_message,
+                                });
+                            }
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            // Handle errors
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred: ' + errorThrown,
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $(".reject-icon").click(function() {
+            const recordId = $(this).data("record-id");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Confirm Reject',
+                text: 'Are you sure you want to reject this record?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, reject it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User confirmed, send the delete request
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'HRMS:reject_salary' %}",  
+                        data: {
+                            record_id: recordId,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Success: Show a success alert
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Record Rejected',
+                                    text: 'The record has been rejected successfully!',
+                                }).then((result) => {
+                                    location.reload();
+                                });
+                            } else {
+                                // Error: Show an error alert
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An error occurred: ' + response.error_message,
+                                });
+                            }
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            // Handle errors
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred: ' + errorThrown,
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+
+    });                    
+</script>
+</html>
+{% endblock content %}

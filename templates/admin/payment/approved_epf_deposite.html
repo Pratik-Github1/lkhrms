@@ -1,0 +1,113 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPF Payment</title>
+</head>
+<style>
+</style>
+<body>
+    <div class="container mt-5">
+        <h3 class="text-center text-primary">EPF Payment</h1>
+            <hr>
+        <form>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="clientName" class="form-label">Client Name</label>
+                        <input type="text" class="form-control" id="clientName" name="clientName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="month" class="form-label">Month</label>
+                        <select class="form-select" id="month" name="month" required>
+                            <option value="" disabled selected>Select Month</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="March">April</option>
+                            <option value="March">May</option>
+                            <option value="March">June</option>
+                            <option value="March">July</option>
+                            <option value="March">August</option>
+                            <option value="March">September</option>
+                            <option value="March">October</option>
+                            <option value="March">November</option>
+                            <option value="March">December</option>
+                            <!-- Add more months here -->
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-md btn-primary">View</button>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="division" class="form-label">Division</label>
+                        <select class="form-select" id="year" name="year" required>
+                            <option value="" disabled selected>Select Division</option>
+                           
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="year" class="form-label">Year</label>
+                        <select class="form-select" id="year" name="year" required>
+                            <option value="" disabled selected>Select Year</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <!-- Add more years here -->
+                        </select>
+                    </div>
+                   
+                </form>
+                </div>
+            </div>
+         <!-- Payment Table -->
+         <div class="table-responsive">
+         <table class="table table-bordered mt-4 text-center table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Sl No</th>
+                    <th scope="col">Client Name</th>
+                    <th scope="col">Division Name</th>
+                    <th scope="col">Month-Year</th>
+                    <th scope="col">Total Attendance</th>
+                    <th scope="col">Total Employee</th>
+                    <th scope="col">Total EPF Deposit</th>
+                    <th scope="col">Hold Employee</th>
+                    <th scope="col">Approve Employee</th>
+                    <th scope="col">Approve Amount</th>
+                    <th scope="col">Paid Employee</th>
+                    <th scope="col">Paid Amount</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Add table rows dynamically with data -->
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Client A</td>
+                    <td>Division X</td>
+                    <td>January 2023</td>
+                    <td>100</td>
+                    <td>95</td>
+                    <td>10</td>
+                    <td>456</td>
+                    <td>5464</td>
+                    <td>10</td>
+                    <td>10000</td>
+                    <td>1000</td>
+                    <td>
+                        <a class="text-primary text-decoration-none" href="">View</a>
+                    </td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+    </div>
+</body>
+</html>
+{% endblock content %}

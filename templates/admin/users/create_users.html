@@ -1,0 +1,173 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body>
+    <div class="card shadow">
+        <div class="card-header p-3">
+            <strong>
+                Client Division Estimate Billings Details
+            </strong>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>SL No</th>
+                            <th>User Id</th>
+                            <th>User Name</th>
+                            <th>Role Name</th>
+                            <th>Branch Name</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>65466</td>
+                            <td>Pratik</td>
+                            <td>Entry User</td>
+                            <td>Head Office</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" style="text-decoration: none;" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">Edit Branch</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>65480</td>
+                            <td>Kishan</td>
+                            <td>Tender Monitor</td>
+                            <td>Head Office</td>
+                            <td>InActive</td>
+                            <td>
+                                <a href="#" style="text-decoration: none;" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">Edit Branch</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>65434</td>
+                            <td>Manas</td>
+                            <td>Approve User</td>
+                            <td>Head Office</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" style="text-decoration: none;" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">Edit Branch</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>65676</td>
+                            <td>Somya</td>
+                            <td>Entry User</td>
+                            <td>Head Office</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" style="text-decoration: none;" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">Edit Branch</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>65423</td>
+                            <td>Mitali</td>
+                            <td>New Joining</td>
+                            <td>Head Office</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" style="text-decoration: none;" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">Edit Branch</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>65456</td>
+                            <td>Jyoti</td>
+                            <td>Guest User</td>
+                            <td>Head Office</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" style="text-decoration: none;" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">Edit Branch</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>65006</td>
+                            <td>Chinmaya</td>
+                            <td>Manager Hr</td>
+                            <td>Head Office</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="#" style="text-decoration: none;" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">Edit Branch</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot style="font-size: 10px;">
+                        <tr>
+                            <th>SL No</th>
+                            <th>User Id</th>
+                            <th>User Name</th>
+                            <th>Role Name</th>
+                            <th>Branch Name</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal For Edit Branch -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary" id="exampleModalLabel">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="" class="form-label">User Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" disabled>
+                    <label for="" class="form-label mt-2">User Id<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="" disabled>
+                    <label for="" class="form-label mt-2">Branch<span class="text-danger">*</span></label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected disabled>__Select__</option>
+                        <option value=""></option>
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-sm">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Add the "active" class to trigger the fade-in animation when the document is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container.fade-in');
+            container.classList.add('active');
+        });
+    </script>
+</body>
+
+</html>
+{% endblock content %}

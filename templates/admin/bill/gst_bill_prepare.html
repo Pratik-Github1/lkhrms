@@ -1,0 +1,106 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Bill Prepare</title>
+</head>
+<style>
+    /* Style for the searchbox row */
+    #searchbox {
+        background-color: rgb(240, 234, 226);
+        padding: 10px;
+    }
+
+    /* Style for the input fields */
+    .form-control {
+        font-size: 14px;
+    }
+
+    /* Style for the buttons */
+    .btn-primary {
+       font-size: 12px;
+    } 
+    #searchClientForm {
+        margin-top: 10px;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="row" id="searchbox">
+            <form method="get" id="searchClientForm">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <input type="date" name="from_date" id=""  class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <input type="date" name="to_date" id=""  class="form-control">
+                    </div>
+                    <div class="col-md-3 mb-2 mt-1" >
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if bills %}
+    <div class="table-responsive" style="font-size: 10px;">
+        <table class="table table-bordered mt-4 text-center table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Sl No</th>
+                    <th scope="col">Bill No</th>
+                    <th scope="col">Bill Date</th>
+                    <th scope="col">Bill Month</th>
+                    <th scope="col">Client-Division</th>
+                    <th scope="col">Bill Amt</th>
+                    <th scope="col">Before GST</th>
+                    <th scope="col">Taxable Value</th>
+                    <th scope="col">GST</th>
+                    <th scope="col">Exempted Amt.</th>
+                    <th scope="col">GST Receive</th>
+                    <th scope="col">GST TDS</th>
+                    <th scope="col">Total GST</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bill in bills %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ bill.billno }}</td>
+                        <td>{{ bill.billdate }}</td>
+                        <td>{{ bill.yearmonth }}</td>
+                        <td>{{ bill.cid.cname }}-{{ bill.did.division }}</td>
+                        <td>{{ bill.totalbill }}</td>
+                        <td>{{ bill.before_gst }}</td>
+                        <td>{{ bill.taxable_value }}</td>
+                        <td>{{ bill.gst }}</td>
+                        <td>{{ bill.exempted_amount }}</td>
+                        <td>{{ bill.gst_receive }}</td>
+                        <td>{{ bill.gst_tds }}</td>
+                        <td>{{ bill.total_gst }}</td>
+                        <td>{{ bill.balance }}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm">Add Pending List</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p>No bills found for the specified date range.</p>
+{% endif %}
+
+</body>
+
+</html>
+{% endblock content %}

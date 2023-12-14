@@ -1,0 +1,48 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+
+<div class="row row-sm mt-5">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Submitted Bill Lists</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive export-table">
+                    <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom  w-100">
+                        <thead>
+                            <tr>
+                                <th>Sl No</th>
+                                <th>Client Name</th>
+                                <th>Division</th>
+                                <th>Bill No</th>
+                                <th>Bill Date</th>
+                                <th>Strength</th>
+                                <th>Bill Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in bill_data %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ bill.bid.cid.cname }}</td>
+                                <td>{{ bill.bid.did.division }}</td>
+                                <td>{{ bill.bid.billno }}</td>
+                                <td>{{ bill.bid.billdate }}</td>
+                                <td>{{ bill.str }}</td>
+                                <td>{{ bill.bid.totalbill }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+
+

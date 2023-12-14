@@ -1,0 +1,365 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+<style>
+    #ClientCard {
+        font-size: 12px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    #stateSelect,
+    #districtSelect,
+    input[type="number"] {
+        width: 180px;
+        /* Adjust the width as needed */
+        height: 35px;
+        /* Adjust the height as needed */
+        font-size: 14px;
+        /* Adjust the font size as needed */
+    }
+
+    #contactRemark,
+    #contactDesign,
+    #contactEmail,
+    #contactMob,
+    #contactName {
+        width: 140px;
+        height: 35px;
+        font-size: 12px;
+        margin-top: 2px;
+    }
+</style>
+
+<body>
+    <form method="post" id="client_details">
+        {% csrf_token %}
+        <div class="card mt-5 shadow-sm">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Enter Client Details</h3>
+                <a href="{% url 'HRMS:client_lists' %}">View Client Lists</a>
+            </div>
+            
+            <div class="card-body pb-2">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Client Name<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="client_name" class="form-control" id="" aria-describedby="" required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Client Short Name<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="client_short_name" class="form-control" id="" aria-describedby=""
+                            required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Client Email Id<span
+                                class="text-danger">*</span></label>
+                        <input type="email" name="client_client_email" class="form-control" id="" aria-describedby=""
+                            required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Office Phone<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="client_office_phone" class="form-control" id="" aria-describedby=""
+                            required>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Select State<span
+                                class="text-danger">*</span></label>
+                        <select id="stateSelect" name="client_state" class="form-control">
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha" selected>Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">District<span
+                                class="text-danger">*</span></label>
+
+                        <select id="districtSelect" name="client_district" class="form-control">
+                            <option selected disabled>--Choose--</option>
+                            <option value="Angul">Angul</option>
+                            <option value="Balangir">Balangir</option>
+                            <option value="Balasore">Balasore</option>
+                            <option value="Bargarh">Bargarh</option>
+                            <option value="Bhadrak">Bhadrak</option>
+                            <option value="Cuttack">Cuttack</option>
+                            <option value="Dhenkanal">Dhenkanal</option>
+                            <option value="Ganjam">Ganjam</option>
+                            <option value="Jagatsinghpur">Jagatsinghpur</option>
+                            <option value="Jajpur">Jajpur</option>
+                            <option value="Kalahandi">Kalahandi</option>
+                            <option value="Kandhamal">Kandhamal</option>
+                            <option value="Kendrapara">Kendrapara</option>
+                            <option value="Kendujhar">Kendujhar</option>
+                            <option value="Khordha">Khordha</option>
+                            <option value="Malkangiri">Malkangiri</option>
+                            <option value="Mayurbhanj">Mayurbhanj</option>
+                            <option value="Nabarangpur">Nabarangpur</option>
+                            <option value="Nayagarh">Nayagarh</option>
+                            <option value="Nuapada">Nuapada</option>
+                            <option value="Puri">Puri</option>
+                            <option value="Rayagada">Rayagada</option>
+                            <option value="Sambalpur">Sambalpur</option>
+                            <option value="Subarnapur">Subarnapur</option>
+                            <option value="Sundargarh">Sundargarh</option>
+                        </select>
+
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">PIN Code<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="client_pincode" class="form-control" id="" aria-describedby=""
+                            required>
+                    </div>
+
+                    <div class="col-md-3 ">
+                        <label for="clientcode" class="form-label text-dark">Start Date<span
+                                class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="start_date" name="client_start_date"
+                            aria-describedby="clientCodeHelp" required>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Work Contract No.<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="client_work_contract_no" class="form-control" id=""
+                            aria-describedby="clientCodeHelp" required>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Contract Value<span
+                                class="text-danger">*</span></label>
+                        <input type="text" name="client_Contract_Value" class="form-control" id=""
+                            aria-describedby="clientCodeHelp" required>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">GST No.<span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="" name="client_GST_No"
+                            aria-describedby="clientCodeHelp" required>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">End Date<span
+                                class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="end_date" name="client_end_date"
+                            aria-describedby="clientCodeHelp" required>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="clientcode" class="form-label text-dark">Address<span
+                                class="text-danger">*</span></label>
+                        <textarea name="client_address" class="form-control" id="" rows="1" required></textarea>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="" class="form-label text-dark">Bonus<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_Bonus" value="1">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_Bonus" value="0">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="" class="form-label text-dark">EPF<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_EPF" id="inlineRadio3"
+                                value="1">
+                            <label class="form-check-label" for="Yes">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_EPF" id="inlineRadio4"
+                                value="0">
+                            <label class="form-check-label" for="No">No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="" class="form-label text-dark">ESI<span class="text-danger">*</span></label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_ESI" id="" value="1">
+                            <label class="form-check-label" for="Yes">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="client_ESI" id="" value="0">
+                            <label class="form-check-label" for="False">No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <h5 class="text-primary text-center mt-4">Contact Person Details</h4>
+                        <hr>
+                        <div class="col-md-2 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Name<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" id="contactName" aria-describedby=""
+                                required>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Mobile No.<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="mobile_number" class="form-control" id="contactMob"
+                                aria-describedby="clientCodeHelp" required>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Email Id<span
+                                    class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" id="contactEmail" aria-describedby=""
+                                required>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="clientcode" class="form-label text-dark">Desigination<span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="designation" class="form-control" id="contactDesign"
+                                aria-describedby="clientCodeHelp" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="clientcode" class="form-label text-dark">Remarks<span
+                                    class="text-danger">*</span></label>
+                            <textarea class="form-control" name="remark" id="contactRemark" rows="1"
+                                required></textarea>
+                        </div>
+                        <div class="col-md-2 text-center" style="margin-top: 40px;">
+                            <!-- Added text-center class to center align the content -->
+                            <button type="submit" id="addDataBtn" class="btn btn-sm btn-success me-md-2">Save</button>
+                            <button type="button" class="btn btn-sm btn-danger">Cancel</button>
+                        </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    // Wait for the DOM to be ready
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the form element
+        var form = document.getElementById('client_details');
+
+        // Attach an event listener to the form for form submission
+        form.addEventListener('submit', function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Show a confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to add the client details.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, add it!',
+                cancelButtonText: 'No, cancel',
+            }).then((result) => {
+                // If the user clicks "Yes"
+                if (result.isConfirmed) {
+                    // Create a FormData object to serialize the form data
+                    var formData = new FormData(form);
+
+                    // Make an AJAX request
+                    fetch("{% url 'HRMS:add_client' %}", {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Check if the response indicates success
+                        if (data.success) {
+                            // Show success message using SweetAlert
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: data.message,
+                                onClose: () => {
+                                    window.location.reload();
+                                }
+                            });                            
+                        } else {
+                            // Show error message using SweetAlert
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message,
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        // Show error message using SweetAlert for unexpected errors
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An unexpected error occurred. Please try again.',
+                        });
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+</html>
+
+{% endblock content %}

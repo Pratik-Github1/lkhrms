@@ -1,0 +1,22 @@
+# Tables Used In Projet :-
+
+1. Client Table - Clientmst
+2. Division Table - Divisionmst
+3. Estimate Billing - Clientdivisionestimatebilling and  Clientdivisionestimatebillingdtl
+4. Employee - Employeemst
+5. Salary Update Employee - Employeesalaryupdate
+6. Employee Loan Table - Emploandtl and Emploanhdr
+
+
+
+
+
+LK238 - ADH PALLAHARA
+
+
+python manage.py makemigrations HRMS
+python manage.py migrate HRMS 0001_initial  --fake
+python manage.py makemigrations HRMS
+python manage.py migrate HRMS
+python manage.py makemigrations
+python manage.py migrate

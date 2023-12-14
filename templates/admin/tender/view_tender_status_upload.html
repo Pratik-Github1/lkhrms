@@ -1,0 +1,215 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Tenders Prepartion</title>
+
+    <!-- Start date js -->
+    <!-- <script src="master\js\s_date.js"></script> -->
+
+    <!-- SweetAlert library cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+        }
+
+        /* Add border to the container */
+        .custom-border {
+            border: 1px solid #ccc;
+            padding: 20px;
+            /* Add some padding for better appearance */
+            border-radius: 8px;
+        }
+    </style>
+
+
+    <script>
+        // JS for start date
+        function validateDate() {
+            var startDateInput = document.getElementById('start_date');
+            var startDate = new Date(startDateInput.value);
+            var currentDate = new Date();
+
+            // Check if the selected date is today or in the future
+            if (startDate >= currentDate) {
+                return true; // Allow form submission
+            } else {
+                // Show SweetAlert error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Start Date',
+                    text: 'Please select a date that is today or in the future.',
+                });
+                return false; // Prevent form submission
+            }
+        }
+
+        // JS for end date
+        function validateDate() {
+            var endDateInput = document.getElementById('end_date');
+            var endDate = new Date(endDateInput.value);
+            var currentDate = new Date();
+
+            // Check if the selected date is today or in the future
+            if (endDate >= currentDate) {
+                return true; // Allow form submission
+            } else {
+                // Show SweetAlert error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid End Date',
+                    text: 'Please select a date that is today or in the future.',
+                });
+                return false; // Prevent form submission
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container mt-5 fade-in custom-border">
+        <form action="">
+            <!-- Client Details -->
+            <h3 class="text-center mb-4 text-primary">View Tender Status</h3>
+            <hr>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <div class="mb-3">
+                        <label for="txtTenderName" class="form-label">Tender Name <span
+                                class="text-danger">*</span></label>
+                        <textarea rows="2" cols="20" id="" disabled="disabled" class="form-control"
+                            placeholder="Tender Name"></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="ddlTender" class="form-label">Tender Type</label>
+                        <select name="" id="" disabled="disabled" class="form-select">
+                            <option selected="selected" value="1"></option>
+                            <option value="2"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtPubDate" class="form-label">Date of Publish <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtExprDate" class="form-label">Date Of Expire <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="mb-3">
+                        <label for="txtCategory" class="form-label">Category <span class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="mb-3">
+                        <label for="txtStrength" class="form-label">Strength <span class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="mb-3">
+                        <label for="txtContractValue" class="form-label">Contract Value <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="mb-3">
+                        <label for="txtContractPeriod" class="form-label">Contract Period <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtDateAdm" class="form-label">Website Name <span
+                                class="text-danger">*</span></label>
+                        <input name="ctl00$ContentPlaceHolder1$txtDateAdm" type="text"
+                            id="ContentPlaceHolder1_txtDateAdm" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtPreBidMeet" class="form-label">Pri-Bid meet <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtSubLastDt" class="form-label">Last Date of Submission <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtModeSub" class="form-label">Mode Submission <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtTechBidOpen" class="form-label">Technical Bid Open <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtFinBibOpen" class="form-label">Financial Bid Open <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtPaperCost" class="form-label">Paper Cost <span
+                                class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <div class="mb-3">
+                        <label for="txtEMD" class="form-label">EMD <span class="text-danger">*</span></label>
+                        <input name="" type="text" value="" id="" disabled="disabled" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        // Add the "active" class to trigger the fade-in animation when the document is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container.fade-in');
+            container.classList.add('active');
+        });
+    </script>
+</body>
+
+</html>
+{% endblock content %}

@@ -1,0 +1,6 @@
+username = doadmin
+password = AVNS_2hGa2R1IY73W3Zaog0H hide
+host = lkservicedb-do-user-14823035-0.c.db.ondigitalocean.com
+port = 25060
+database = defaultdb
+sslmode = REQUIRED

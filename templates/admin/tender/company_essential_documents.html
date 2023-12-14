@@ -1,0 +1,73 @@
+{% extends "hrms/index.html" %}
+{% block content %}
+
+<div class="row row-sm mt-5">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between;">
+                <h3 class="card-title">Company Essential Documents Details</h3>
+                <a href="{% url 'HRMS:add_new_document' %}">Add New Document</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom w-100" id="responsive-datatable" >
+                        <thead>
+                            <tr>
+                                <th style="font-size: 12px;">Sl No</th>
+                                <th style="font-size: 12px;">Document Name</th>
+                                <th style="font-size: 12px;">Regestratrion Date</th>
+                                <th style="font-size: 12px;">Expire Date</th>
+                                <th style="font-size: 12px;">Unsign Copy</th>
+                                <th style="font-size: 12px;">Sign Copy</th>
+                                <th style="font-size: 12px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-size: 12px;">
+                            {% for document in documents %}
+                              
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{document.docname}}</td>
+                                    <td>
+                                        {% if document.docregdt %}
+                                            {{ document.docregdt }}
+                                        {% else %}
+                                            NA
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if document.docexpirdt %}
+                                            {{ document.docexpirdt }}
+                                        {% else %}
+                                            NA
+                                        {% endif %}
+                                    </td>
+                                    
+        
+                                    <td>
+                                        {% if document.unsignpath %}
+                                            <a href="{{ document.get_unsign_url }}" target="_blank">Download</a>
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if document.signpath %}
+                                            <a href="{{ document.get_sign_url }}" target="_blank">Download</a>
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>Edit</td>
+                                    
+                                </tr>
+                            {% endfor %}    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
